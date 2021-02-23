@@ -28,13 +28,20 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Article> addBlog(@Valid @RequestBody Article article){
+    public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
+        Article result = this.articleRepository.save(article);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+        article.setId(id);
         Article result = this.articleRepository.save(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteBlog(@PathVariable Integer id){
+    public ResponseEntity<?> deleteArticle(@PathVariable Integer id){
         this.articleRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
