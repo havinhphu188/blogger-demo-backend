@@ -1,36 +1,38 @@
 package com.example.bloggerdemo.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
+    public SecurityConfiguration(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    }
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        // We don't need CSRF for this example
-        httpSecurity
-                .csrf().disable()
-                .formLogin()
-                    .loginProcessingUrl("/api/authentication")
-                    .successHandler(new BloggerAuthenticationSuccessHandler())
-                    .failureHandler(new BloggerAuthenticationFailureHandler())
-                    .permitAll()
+        httpSecurity.csrf().disable()
+                    .authorizeRequests().antMatchers("/api/authenticate").permitAll()
+                    .anyRequest().authenticated()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .exceptionHandling()
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and()
-                    .authorizeRequests()
-                        .anyRequest()
-                            .authenticated();
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+
+//        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
@@ -43,5 +45,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    @Bean
     public PasswordEncoder encoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
