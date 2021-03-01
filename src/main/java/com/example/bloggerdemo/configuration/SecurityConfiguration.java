@@ -1,5 +1,7 @@
 package com.example.bloggerdemo.configuration;
 
+import com.example.bloggerdemo.security.JwtUserDetailsService;
+import com.example.bloggerdemo.security.JwtAuthenticationEntryPoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +29,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
-                    .authorizeRequests().antMatchers("/api/authenticate").permitAll()
+        httpSecurity
+                .csrf().disable()
+                .authorizeRequests()
+                    .antMatchers("/api/authenticate").permitAll()
                     .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .exceptionHandling()
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint);
@@ -40,9 +45,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @Override
     public UserDetailsService userDetailsService() {
-        return new BloggerUserDetailsService();
+        return new JwtUserDetailsService();
     }
 
     @Bean
@@ -51,7 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }

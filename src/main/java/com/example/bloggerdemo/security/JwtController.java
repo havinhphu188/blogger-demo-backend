@@ -1,8 +1,5 @@
-package com.example.bloggerdemo.controller;
+package com.example.bloggerdemo.security;
 
-import com.example.bloggerdemo.configuration.BloggerUserDetailsService;
-import com.example.bloggerdemo.configuration.JwtRequest;
-import com.example.bloggerdemo.configuration.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

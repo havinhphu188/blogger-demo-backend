@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.configuration;
+package com.example.bloggerdemo.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

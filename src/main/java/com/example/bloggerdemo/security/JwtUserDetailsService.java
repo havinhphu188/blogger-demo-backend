@@ -1,11 +1,11 @@
-package com.example.bloggerdemo.configuration;
+package com.example.bloggerdemo.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class BloggerUserDetailsService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
     /**
      * Locates the user based on the username. In the actual implementation, the search
      * may possibly be case sensitive, or case insensitive depending on how the

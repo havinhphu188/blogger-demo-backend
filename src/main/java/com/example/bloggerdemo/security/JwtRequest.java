@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.configuration;
+package com.example.bloggerdemo.security;
 
 import java.io.Serializable;
 
