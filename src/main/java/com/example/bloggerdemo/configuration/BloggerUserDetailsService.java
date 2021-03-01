@@ -20,9 +20,9 @@ public class BloggerUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("pw22")
+        return User
+                .withUsername("user")
+                .password("pw188")
                 .roles("USER")
                 .build();
     }

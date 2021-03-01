@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BloggerUserDetailsService();
     }
 
-//    @Bean
+    @Bean
     public PasswordEncoder encoder() {
         return NoOpPasswordEncoder.getInstance();
     }
