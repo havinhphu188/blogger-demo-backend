@@ -17,18 +17,20 @@ public class JwtController {
 
     private final AuthenticationManager jwtAuthenticationManager;
     private final UserDetailsService userDetailsService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public JwtController(AuthenticationManager jwtAuthenticationManager, UserDetailsService userDetailsService) {
+    public JwtController(AuthenticationManager jwtAuthenticationManager, UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
         this.jwtAuthenticationManager = jwtAuthenticationManager;
         this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @PostMapping()
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         jwtAuthenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
-        return ResponseEntity.ok(new JwtResponse(userDetails.getPassword()));
+        final String token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 }
