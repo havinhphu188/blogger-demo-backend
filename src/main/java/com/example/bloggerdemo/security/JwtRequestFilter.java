@@ -1,10 +1,8 @@
-package com.example.bloggerdemo.configuration;
+package com.example.bloggerdemo.security;
 
 import com.example.bloggerdemo.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +17,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
+    private final String header = "Authorization";
 
     @Autowired
     public JwtRequestFilter(JwtTokenUtil jwtTokenUtil) {
@@ -28,23 +27,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String requestTokenHeader = request.getHeader("Authorization");
-        String username;
-        String jwtToken;
-
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
-            username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-        } else {
-            throw new AccessDeniedException("No jwt Token");
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, null);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (hasAuthorizationToken(request)) {
+            setAuthorizedIfTokenValid(request);
         }
         chain.doFilter(request, response);
+    }
+
+    private void setAuthorizedIfTokenValid(HttpServletRequest request) {
+        String jwtToken = request.getHeader(header).substring(7);
+        String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                username, null, null);
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+    }
+
+
+    private boolean hasAuthorizationToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(header);
+        if (authorizationHeader == null) return false;
+        if (!authorizationHeader.startsWith("Bearer ")) return false;
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.bloggerdemo.configuration;
 
+import com.example.bloggerdemo.security.JwtRequestFilter;
 import com.example.bloggerdemo.security.JwtUserDetailsService;
 import com.example.bloggerdemo.security.JwtAuthenticationEntryPoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
