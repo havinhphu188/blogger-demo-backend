@@ -17,7 +17,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         BloggerUser bloggerUser = this.bloggerUserRepository.findOneByUsername(username)
-                .orElseThrow(()-> new UsernameNotFoundException(username));
+                .orElseThrow(()-> new UsernameNotFoundException("User \'"+username + "\' does not exist"));
         return User
                 .withUsername(bloggerUser.getUsername())
                 .password(bloggerUser.getPassword())

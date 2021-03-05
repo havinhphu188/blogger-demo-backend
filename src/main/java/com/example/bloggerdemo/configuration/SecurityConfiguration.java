@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -64,9 +65,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper().registerModules(
-                new ProblemModule(),
-                new ConstraintViolationProblemModule());
+    public DaoAuthenticationProvider daoAuthenticationProvider(){
+        DaoAuthenticationProvider impl = new DaoAuthenticationProvider();
+        impl.setPasswordEncoder(this.encoder());
+        impl.setUserDetailsService(this.userDetailsService());
+        impl.setHideUserNotFoundExceptions(false);
+        return impl;
     }
 }
