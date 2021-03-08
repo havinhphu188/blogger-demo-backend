@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Component
 public class ArticleService {
@@ -27,5 +28,11 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
+    public List<Article> findAll(String username) {
+        BloggerUser bloggerUser = bloggerUserRepository
+                .findOneByUsername(username).orElseThrow(() -> new EntityNotFoundException("Entity " + username + " not found"));
+
+        return articleRepository.findByAuthor(bloggerUser);
+    }
 }
 

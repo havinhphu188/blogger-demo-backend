@@ -28,7 +28,9 @@ public class ArticleController {
 
     @GetMapping("all")
     public ResponseEntity<List<Article>> getAll(){
-        List<Article> articles = this.articleRepository.findAll();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        String username = (String) securityContext.getAuthentication().getPrincipal();
+        List<Article> articles = this.articleService.findAll(username);
         return ResponseEntity.ok(articles);
     }
 
