@@ -26,7 +26,7 @@ public class ArticleController {
     @GetMapping("all")
     public ResponseEntity<List<Article>> getAll(){
         List<Article> articles = this.articleService
-                .findAll(getUsernameFromContext());
+                .findAll(getUserIdFromContext());
         return ResponseEntity.ok(articles);
     }
 
@@ -34,26 +34,26 @@ public class ArticleController {
     public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
 
         Article result = this.articleService
-                .save(article, getUsernameFromContext());
+                .save(article, getUserIdFromContext());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
         article.setId(id);
-        Article result = this.articleService.update(article, getUsernameFromContext());
+        Article result = this.articleService.update(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Integer id){
-        this.articleService.deleteById(id, getUsernameFromContext());
+        this.articleService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private String getUsernameFromContext(){
+    private int getUserIdFromContext(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        return (String) securityContext.getAuthentication().getPrincipal();
+        return Integer.parseInt((String) securityContext.getAuthentication().getPrincipal());
     }
 
 }

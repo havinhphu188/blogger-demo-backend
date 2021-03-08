@@ -35,12 +35,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private void setAuthorizedIfTokenValid(HttpServletRequest request) {
         String jwtToken = request.getHeader(header).substring(7);
-        String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        String userId = jwtTokenUtil.getIdFromToken(jwtToken);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                username, null, null);
+                userId, null, null);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
-
 
     private boolean hasAuthorizationToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(header);

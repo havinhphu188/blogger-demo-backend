@@ -22,33 +22,26 @@ public class ArticleService {
         this.bloggerUserRepository = bloggerUserRepository;
     }
 
-    public Article save(Article article, String username){
-        article.setAuthor(getBloggerUser(username));
+    public Article save(Article article, int userId){
+        article.setAuthor(getBloggerUser(userId));
         return articleRepository.save(article);
     }
 
-    public List<Article> findAll(String username) {
-        return articleRepository.findByAuthor(getBloggerUser(username));
+    public List<Article> findAll(int userId) {
+        return articleRepository.findByAuthor(getBloggerUser(userId));
     }
 
-    private BloggerUser getBloggerUser(String username){
+    private BloggerUser getBloggerUser(int userId){
         return bloggerUserRepository
-                .findOneByUsername(username).orElseThrow(() -> new EntityNotFoundException("Entity " + username + " not found"));
+                .findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
 
     }
 
-    public Article update(Article article, String username) {
-        BloggerUser author = article.getAuthor();
-        if (!author.getUsername().equals(username))
-            throw new BadCredentialsException(username + " is not allowed to perform this op");
+    public Article update(Article article) {
         return articleRepository.save(article);
     }
 
-    public void deleteById(Integer id, String username) {
-        Article article = this.articleRepository.getOne(id);
-        if (!article.getAuthor().getUsername().equals(username))
-            throw new BadCredentialsException(username + " is not allowed to perform this op");
-
+    public void deleteById(Integer id) {
         this.articleRepository.deleteById(id);
     }
 }
