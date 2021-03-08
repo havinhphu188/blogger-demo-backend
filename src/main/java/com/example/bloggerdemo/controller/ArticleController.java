@@ -35,7 +35,6 @@ public class ArticleController {
 
     @PostMapping()
     public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
-
         Article result = this.articleService
                 .save(article, getUserIdFromContext());
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -43,8 +42,8 @@ public class ArticleController {
 
     @PutMapping("{id}")
     public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
-        if (!isAccessible(id))
-            throw new BadCredentialsException("Does not allowed");
+        if (isAccessDenied(id))
+            new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         article.setId(id);
         Article result = this.articleService.update(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -52,8 +51,8 @@ public class ArticleController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Integer id){
-        if (!isAccessible(id))
-            throw new BadCredentialsException("Does not allowed");
+        if (isAccessDenied(id))
+            new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         this.articleService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -63,9 +62,9 @@ public class ArticleController {
         return Integer.parseInt((String) securityContext.getAuthentication().getPrincipal());
     }
 
-    private boolean isAccessible(int id){
+    private boolean isAccessDenied(int id){
         Article article = articleRepository.getOne(id);
-        return article.getAuthor().getId() == getUserIdFromContext();
+        return article.getAuthor().getId() != getUserIdFromContext();
     }
 
 }
