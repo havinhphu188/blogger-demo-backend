@@ -3,7 +3,6 @@ package com.example.bloggerdemo.configuration;
 import com.example.bloggerdemo.security.JwtRequestFilter;
 import com.example.bloggerdemo.security.JwtUserDetailsService;
 import com.example.bloggerdemo.security.JwtAuthenticationEntryPoint;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.zalando.problem.ProblemModule;
-import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
 @EnableWebSecurity
 @Configuration
