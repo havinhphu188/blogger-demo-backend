@@ -28,17 +28,16 @@ public class ArticleController {
 
     @GetMapping("all")
     public ResponseEntity<List<Article>> getAll(){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String username = (String) securityContext.getAuthentication().getPrincipal();
-        List<Article> articles = this.articleService.findAll(username);
+        List<Article> articles = this.articleService
+                .findAll(getUsernameFromContext());
         return ResponseEntity.ok(articles);
     }
 
     @PostMapping()
     public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String username = (String) securityContext.getAuthentication().getPrincipal();
-        Article result = this.articleService.save(article,username);
+
+        Article result = this.articleService
+                .save(article, getUsernameFromContext());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -55,5 +54,9 @@ public class ArticleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    private String getUsernameFromContext(){
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return (String) securityContext.getAuthentication().getPrincipal();
+    }
 
 }

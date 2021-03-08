@@ -22,17 +22,18 @@ public class ArticleService {
     }
 
     public Article save(Article article, String username){
-        BloggerUser bloggerUser = bloggerUserRepository
-                .findOneByUsername(username).orElseThrow(() -> new EntityNotFoundException("Entity " + username + " not found"));
-        article.setAuthor(bloggerUser);
+        article.setAuthor(getBloggerUser(username));
         return articleRepository.save(article);
     }
 
     public List<Article> findAll(String username) {
-        BloggerUser bloggerUser = bloggerUserRepository
+        return articleRepository.findByAuthor(getBloggerUser(username));
+    }
+
+    private BloggerUser getBloggerUser(String username){
+        return bloggerUserRepository
                 .findOneByUsername(username).orElseThrow(() -> new EntityNotFoundException("Entity " + username + " not found"));
 
-        return articleRepository.findByAuthor(bloggerUser);
     }
 }
 
