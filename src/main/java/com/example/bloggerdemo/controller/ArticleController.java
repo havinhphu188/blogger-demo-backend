@@ -40,9 +40,9 @@ public class ArticleController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+    public ResponseEntity<?> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
         if (isAccessDenied(id))
-            new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         article.setId(id);
         Article result = this.articleService.update(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -51,7 +51,7 @@ public class ArticleController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Integer id){
         if (isAccessDenied(id))
-            new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
         this.articleService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

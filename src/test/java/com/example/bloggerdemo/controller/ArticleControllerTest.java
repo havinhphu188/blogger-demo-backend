@@ -104,7 +104,43 @@ class ArticleControllerTest {
     }
 
     @Test
-    void editArticle() {
+    @WithMockCustomUser(userId = "123")
+    void editArticle() throws Exception {
+        Article currentArticle = new Article();
+        currentArticle.setId(123);
+        currentArticle.setAuthor(new BloggerUser());
+        currentArticle.getAuthor().setId(123);
+
+        when(articleRepository.getOne(1)).thenReturn(currentArticle);
+        this.mockMvc.perform(put("/api/article/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \"title1\",\n" +
+                        "    \"content\": \"content2\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk());
+//        verify(this.articleService).update()
+    }
+
+    @Test
+    @WithMockCustomUser(userId = "144")
+    void editArticleAccessDenied() throws Exception {
+        Article currentArticle = new Article();
+        currentArticle.setId(123);
+        currentArticle.setAuthor(new BloggerUser());
+        currentArticle.getAuthor().setId(123);
+
+        when(articleRepository.getOne(1)).thenReturn(currentArticle);
+        this.mockMvc.perform(put("/api/article/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \"title1\",\n" +
+                        "    \"content\": \"content2\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+//        verify(this.articleService).update()
     }
 
     @Test
