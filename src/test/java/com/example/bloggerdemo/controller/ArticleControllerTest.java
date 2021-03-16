@@ -5,7 +5,6 @@ import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
 import com.example.bloggerdemo.util.WithMockCustomUser;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,7 +140,7 @@ class ArticleControllerTest {
     @WithMockCustomUser(userId = "144")
     void editArticleAccessDenied() throws Exception {
         Article currentArticle = new Article();
-        currentArticle.setId(123);
+        currentArticle.setId(1);
         currentArticle.setAuthor(new BloggerUser());
         currentArticle.getAuthor().setId(123);
 
@@ -157,6 +156,33 @@ class ArticleControllerTest {
     }
 
     @Test
-    void deleteArticle() {
+    @WithMockCustomUser(userId = "123")
+    void deleteArticleSuccess() throws Exception{
+        Article currentArticle = new Article();
+        currentArticle.setId(1);
+        currentArticle.setAuthor(new BloggerUser());
+        currentArticle.getAuthor().setId(123);
+
+        when(articleRepository.getOne(1)).thenReturn(currentArticle);
+
+        this.mockMvc.perform(delete("/api/article/1"))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(articleService).deleteById(1);
+    }
+
+    @Test
+    @WithMockCustomUser(userId = "144")
+    void deleteArticleAccessDenied() throws Exception{
+        Article currentArticle = new Article();
+        currentArticle.setId(1);
+        currentArticle.setAuthor(new BloggerUser());
+        currentArticle.getAuthor().setId(123);
+
+        when(articleRepository.getOne(1)).thenReturn(currentArticle);
+
+        this.mockMvc.perform(delete("/api/article/1"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
