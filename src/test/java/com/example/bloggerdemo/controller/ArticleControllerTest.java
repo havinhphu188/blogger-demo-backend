@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -107,20 +106,35 @@ class ArticleControllerTest {
     @WithMockCustomUser(userId = "123")
     void editArticle() throws Exception {
         Article currentArticle = new Article();
-        currentArticle.setId(123);
+        currentArticle.setId(1);
         currentArticle.setAuthor(new BloggerUser());
         currentArticle.getAuthor().setId(123);
 
+        Article article = new Article();
+        article.setId(1);
+        article.setTitle("title2");
+        article.setContent("content2");
+
+        Article updated = new Article();
+        updated.setId(1);
+        updated.setTitle("title2");
+        updated.setContent("content2");
+        updated.setAuthor(new BloggerUser());
+        updated.getAuthor().setId(123);
+
         when(articleRepository.getOne(1)).thenReturn(currentArticle);
+        when(articleService.update(refEq(article))).thenReturn(updated);
         this.mockMvc.perform(put("/api/article/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "    \"title\": \"title1\",\n" +
+                        "    \"title\": \"title2\",\n" +
                         "    \"content\": \"content2\"\n" +
                         "}"))
                 .andDo(print())
-                .andExpect(status().isOk());
-//        verify(this.articleService).update()
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title", is("title2")));
+
+        verify(this.articleService).update(refEq(article));
     }
 
     @Test
@@ -140,7 +154,6 @@ class ArticleControllerTest {
                         "}"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-//        verify(this.articleService).update()
     }
 
     @Test

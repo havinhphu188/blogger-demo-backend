@@ -38,7 +38,11 @@ public class ArticleService {
     }
 
     public Article update(Article article) {
-        return articleRepository.save(article);
+        Article current = articleRepository.getOne(article.getId());
+        current.update(
+                article.getTitle(),
+                article.getContent());
+        return articleRepository.save(current);
     }
 
     public void deleteById(Integer id) {

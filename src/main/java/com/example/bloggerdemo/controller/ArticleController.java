@@ -1,5 +1,6 @@
 package com.example.bloggerdemo.controller;
 
+import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
@@ -40,9 +41,9 @@ public class ArticleController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+    public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
         if (isAccessDenied(id))
-            return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
+            throw new NoAuthorizationException();
         article.setId(id);
         Article result = this.articleService.update(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -51,7 +52,7 @@ public class ArticleController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Integer id){
         if (isAccessDenied(id))
-            return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
+            throw new NoAuthorizationException();
         this.articleService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

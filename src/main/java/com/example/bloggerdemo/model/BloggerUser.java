@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 public class BloggerUser  {
-    @JsonValue
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
