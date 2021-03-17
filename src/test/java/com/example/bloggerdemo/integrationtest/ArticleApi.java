@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.controller;
+package com.example.bloggerdemo.integrationtest;
 
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.security.JwtTokenUtil;
@@ -14,6 +14,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import java.util.List;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.when;
@@ -30,6 +37,9 @@ public class ArticleApi {
     private TestRestTemplate restTemplate;
     private String token;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @BeforeEach
     public void setUp() {
         token = "token";
@@ -37,14 +47,25 @@ public class ArticleApi {
     }
 
     @Test
-    public void greetingShouldReturnDefaultMessage() throws Exception {
+    public void saveArticle() throws Exception {
+        String randomTitle = UUID.randomUUID().toString();
+        String randomContent = UUID.randomUUID().toString();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer token");
         Article article = new Article();
-        article.setTitle("abc");
-        article.setContent("contentabc");
+        article.setTitle(randomTitle);
+        article.setContent(randomContent);
         HttpEntity<Article> request = new HttpEntity<>(article,headers);
         ResponseEntity<Article> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/article",request,Article.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        List results = entityManager.createQuery("select a " +
+                "from Article a where a.title = :title and a.content = :content")
+                .setParameter("title",randomTitle)
+                .setParameter("content", randomContent).getResultList();
+
+        assertEquals(results.size(),1);
+        assertEquals(((Article)results.get(0)).getTitle(),randomTitle);
+        assertEquals(((Article)results.get(0)).getContent(),randomContent);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.util;
+package com.example.bloggerdemo.util.mockcustomuser;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

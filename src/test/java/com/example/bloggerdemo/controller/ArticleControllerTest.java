@@ -4,7 +4,7 @@ import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
-import com.example.bloggerdemo.util.WithMockCustomUser;
+import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
