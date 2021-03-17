@@ -67,7 +67,7 @@ class ArticleServiceTest {
         bloggerUser.setId(userId);
         when(bloggerUserRepository.findById(123)).thenReturn(Optional.of(bloggerUser));
 
-        articleService.findAll(123);
+        articleService.findAllByUser(123);
 
         verify(articleRepository).findByAuthor(bloggerUser);
     }
@@ -79,7 +79,7 @@ class ArticleServiceTest {
         bloggerUser.setId(userId);
         when(bloggerUserRepository.findById(123)).thenThrow(new EntityNotFoundException());
         assertThrows(EntityNotFoundException.class,()->{
-            articleService.findAll(123);
+            articleService.findAllByUser(123);
         });
 
         verify(articleRepository, never()).findByAuthor(bloggerUser);

@@ -27,7 +27,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public List<Article> findAll(int userId) {
+    public List<Article> findAllByUser(int userId) {
         return articleRepository.findByAuthor(getBloggerUser(userId));
     }
 
@@ -47,6 +47,10 @@ public class ArticleService {
 
     public void deleteById(Integer id) {
         this.articleRepository.deleteById(id);
+    }
+
+    public List<Article> getGlobalFeed() {
+        return articleRepository.findAll();
     }
 }
 

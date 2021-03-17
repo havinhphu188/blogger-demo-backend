@@ -67,7 +67,7 @@ class ArticleControllerTest {
         Article article1 = new Article();
         article1.setId(14);
         articles.add(article1);
-        when(articleService.findAll(123)).thenReturn(articles);
+        when(articleService.findAllByUser(123)).thenReturn(articles);
         this.mockMvc.perform(get("/api/article/all"))
                 .andDo(print())
                 .andExpect(status().isOk())

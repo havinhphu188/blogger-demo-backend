@@ -29,7 +29,14 @@ public class ArticleController {
     @GetMapping("all")
     public ResponseEntity<List<Article>> getAll(){
         List<Article> articles = this.articleService
-                .findAll(getUserIdFromContext());
+                .findAllByUser(getUserIdFromContext());
+        return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("global-feed")
+    public ResponseEntity<List<Article>> getGlobalFeed(){
+        List<Article> articles = this.articleService
+                .getGlobalFeed();
         return ResponseEntity.ok(articles);
     }
 
