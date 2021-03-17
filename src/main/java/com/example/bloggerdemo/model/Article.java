@@ -1,9 +1,7 @@
 package com.example.bloggerdemo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -22,7 +20,6 @@ public class Article {
     private String content;
 
     @ManyToOne
-    @JsonIgnore
     private BloggerUser author;
 
     public void update(String title, String content){

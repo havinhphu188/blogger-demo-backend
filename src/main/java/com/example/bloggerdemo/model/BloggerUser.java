@@ -1,6 +1,7 @@
 package com.example.bloggerdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ public class BloggerUser  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @JsonValue
     private String username;
 
     private String password;
