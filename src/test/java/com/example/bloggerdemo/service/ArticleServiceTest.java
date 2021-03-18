@@ -1,4 +1,5 @@
 package com.example.bloggerdemo.service;
+import com.example.bloggerdemo.dto.ArticleDto;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.ArticleRepository;
@@ -32,32 +33,17 @@ class ArticleServiceTest {
     }
 
     @Test
-    void saveSuccess() {
-        int userId = 123;
-        Article article = new Article();
-        BloggerUser bloggerUser = new BloggerUser();
-        bloggerUser.setId(userId);
-        when(bloggerUserRepository.findById(userId))
-                .thenReturn(Optional.of(bloggerUser));
-
-        articleService.save(article,userId);
-
-        verify(articleRepository).save(article);
-        assertEquals(123,article.getAuthor().getId());
-    }
-
-    @Test
     void userIdNotExist() {
         int userId = 123;
-        Article article = new Article();
+        ArticleDto articleDto = new ArticleDto();
         when(bloggerUserRepository.findById(userId))
                 .thenThrow(new EntityNotFoundException("User not found"));
 
         assertThrows(EntityNotFoundException.class,()->{
-            articleService.save(article,userId);
+            articleService.save(articleDto,userId);
         });
 
-        verify(articleRepository, never()).save(article);
+        verify(articleRepository, never()).save(any(Article.class));
     }
 
     @Test
@@ -83,29 +69,6 @@ class ArticleServiceTest {
         });
 
         verify(articleRepository, never()).findByAuthor(bloggerUser);
-    }
-
-    @Test
-    void updateSuccess() {
-        Article current = new Article();
-        current.setId(12);
-        current.setAuthor(new BloggerUser());
-        current.getAuthor().setId(12);
-        current.setTitle("title1");
-        current.setContent("content1");
-
-        Article article = new Article();
-        article.setId(12);
-        article.setTitle("title2");
-        article.setContent("content2");
-
-        when(articleRepository.getOne(12)).thenReturn(current);
-
-        articleService.update(article);
-
-        verify(articleRepository).save(current);
-        assertEquals(current.getTitle(),"title2");
-        assertEquals(current.getContent(),"content2");
     }
 
     @Test
