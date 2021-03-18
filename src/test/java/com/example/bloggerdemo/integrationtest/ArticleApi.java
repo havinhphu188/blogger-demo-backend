@@ -57,7 +57,7 @@ public class ArticleApi {
         article.setTitle(randomTitle);
         article.setContent(randomContent);
         HttpEntity<Article> request = new HttpEntity<>(article,headers);
-        ResponseEntity<Article> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/article",request,Article.class);
+        ResponseEntity<Object> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/article",request, Object.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List results = entityManager.createQuery("select a " +
                 "from Article a where a.title = :title and a.content = :content")

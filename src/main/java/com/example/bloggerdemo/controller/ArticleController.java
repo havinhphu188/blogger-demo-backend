@@ -4,6 +4,8 @@ import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/article")
@@ -27,39 +30,43 @@ public class ArticleController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<Article>> getAll(){
+    public ResponseEntity<List<ArticleVm>> getAll(){
         List<Article> articles = this.articleService
                 .findAllByUser(getUserIdFromContext());
-        return ResponseEntity.ok(articles);
+        List<ArticleVm> articleVms = articles.stream()
+                .map(ArticleVm::new).collect(Collectors.toList());
+        return ResponseEntity.ok(articleVms);
     }
 
     @GetMapping("global-feed")
-    public ResponseEntity<List<Article>> getGlobalFeed(){
+    public ResponseEntity<List<ArticleVm>> getGlobalFeed(){
         List<Article> articles = this.articleService
                 .getGlobalFeed();
-        return ResponseEntity.ok(articles);
+        List<ArticleVm> articleVms = articles.stream()
+                .map(ArticleVm::new).collect(Collectors.toList());
+        return ResponseEntity.ok(articleVms);
     }
 
     @PostMapping()
-    public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
+    public ResponseEntity<ArticleVm> addArticle(@Valid @RequestBody Article article){
         Article result = this.articleService
                 .save(article, getUserIdFromContext());
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
     }
 
     @PostMapping("react/{id}")
-    public ResponseEntity<Article> addReaction(@PathVariable int id){
+    public ResponseEntity<?> addReaction(@PathVariable int id){
         this.articleService.addUserReaction(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+    public ResponseEntity<ArticleVm> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
         if (isAccessDenied(id))
             throw new NoAuthorizationException();
         article.setId(id);
         Article result = this.articleService.update(article);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -80,4 +87,22 @@ public class ArticleController {
         return article.getAuthor().getId() != getUserIdFromContext();
     }
 
+}
+
+@Getter
+@Setter
+class ArticleVm {
+    private Integer id;
+    private String title;
+    private String content;
+    private String author;
+    private int userReactions;
+
+    public ArticleVm(Article article){
+        this.id = article.getId();
+        this.title = article.getTitle();
+        this.content = article.getContent();
+        this.author = article.getAuthor().getUsername();
+        this.userReactions = article.getUserReactions().size();
+    }
 }

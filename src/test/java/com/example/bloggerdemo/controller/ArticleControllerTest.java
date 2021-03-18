@@ -63,21 +63,25 @@ class ArticleControllerTest {
     @WithMockCustomUser(userId = "123")
     void getAll() throws Exception{
         List<Article> articles = new ArrayList<>();
-        articles.add(new Article());
         Article article1 = new Article();
         article1.setId(14);
+        article1.setTitle("title");
+        article1.setContent("content");
+        article1.setAuthor(new BloggerUser());
+        article1.getAuthor().setUsername("user1");
         articles.add(article1);
         when(articleService.findAllByUser(123)).thenReturn(articles);
         this.mockMvc.perform(get("/api/article/all"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$.[1].id",is(14)));
+                .andExpect(jsonPath("$.*", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id",is(14)));
     }
 
     @Test
     @WithMockCustomUser(userId = "123")
     void addArticle() throws Exception {
+
         Article article1 = new Article();
         article1.setTitle("title1");
         article1.setContent("content1");
@@ -120,7 +124,6 @@ class ArticleControllerTest {
         updated.setContent("content2");
         updated.setAuthor(new BloggerUser());
         updated.getAuthor().setId(123);
-
         when(articleRepository.getOne(1)).thenReturn(currentArticle);
         when(articleService.update(refEq(article))).thenReturn(updated);
         this.mockMvc.perform(put("/api/article/1")
