@@ -2,13 +2,16 @@ package com.example.bloggerdemo.service;
 
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
+import com.example.bloggerdemo.model.UserReaction;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Component
@@ -51,6 +54,13 @@ public class ArticleService {
 
     public List<Article> getGlobalFeed() {
         return articleRepository.findAll();
+    }
+
+    @Transactional
+    public void addUserReaction(int articleId){
+        Article article = this.articleRepository.getOne(articleId);
+        article.addUserReaction(new UserReaction());
+        this.articleRepository.save(article);
     }
 }
 

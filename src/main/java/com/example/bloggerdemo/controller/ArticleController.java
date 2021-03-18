@@ -47,6 +47,12 @@ public class ArticleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping("react/{id}")
+    public ResponseEntity<Article> addReaction(@PathVariable int id){
+        this.articleService.addUserReaction(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
         if (isAccessDenied(id))
