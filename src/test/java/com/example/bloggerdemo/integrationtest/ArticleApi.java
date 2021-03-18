@@ -1,5 +1,6 @@
 package com.example.bloggerdemo.integrationtest;
 
+import com.example.bloggerdemo.dto.ArticleDto;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.security.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,11 +54,11 @@ public class ArticleApi {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer token");
-        Article article = new Article();
-        article.setTitle(randomTitle);
-        article.setContent(randomContent);
-        HttpEntity<Article> request = new HttpEntity<>(article,headers);
-        ResponseEntity<Article> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/article",request,Article.class);
+        ArticleDto articleDto = new ArticleDto();
+        articleDto.setTitle(randomTitle);
+        articleDto.setContent(randomContent);
+        HttpEntity<ArticleDto> request = new HttpEntity<>(articleDto,headers);
+        ResponseEntity<ArticleDto> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/article",request,ArticleDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List results = entityManager.createQuery("select a " +
                 "from Article a where a.title = :title and a.content = :content")

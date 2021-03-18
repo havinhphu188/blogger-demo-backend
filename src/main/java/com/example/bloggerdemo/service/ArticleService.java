@@ -28,9 +28,10 @@ public class ArticleService {
         this.bloggerUserRepository = bloggerUserRepository;
     }
 
-    public Article save(Article article, int userId){
+    public ArticleDto save(ArticleDto articleDto, int userId){
+        Article article = ArticleDtoMapper.toMoDel(articleDto);
         article.setAuthor(getBloggerUser(userId));
-        return articleRepository.save(article);
+        return ArticleDtoMapper.toDto(articleRepository.save(article));
     }
 
     public List<ArticleDto> findAllByUser(int userId) {
@@ -46,12 +47,15 @@ public class ArticleService {
 
     }
 
-    public Article update(Article article) {
-        Article current = articleRepository.getOne(article.getId());
+    public ArticleDto update(ArticleDto articleDto) {
+        Article current = articleRepository.getOne(articleDto.getId());
         current.update(
-                article.getTitle(),
-                article.getContent());
-        return articleRepository.save(current);
+                articleDto.getTitle(),
+                articleDto.getContent());
+        return ArticleDtoMapper
+                .toDto(
+                        articleRepository.save(current)
+                );
     }
 
     public void deleteById(Integer id) {

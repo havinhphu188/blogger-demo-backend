@@ -79,17 +79,17 @@ class ArticleControllerTest {
     @Test
     @WithMockCustomUser(userId = "123")
     void addArticle() throws Exception {
-        Article article1 = new Article();
+        ArticleDto article1 = new ArticleDto();
         article1.setTitle("title1");
         article1.setContent("content1");
 
-        Article result = new Article();
+        ArticleDto result = new ArticleDto();
         result.setTitle("title1");
         result.setContent("content1");
-        result.setAuthor(new BloggerUser());
-        result.getAuthor().setId(123);
+        result.setAuthor("user1");
 
-        when(articleService.save(any(Article.class),eq(123))).thenReturn(result);
+
+        when(articleService.save(any(ArticleDto.class),eq(123))).thenReturn(result);
         this.mockMvc.perform(post("/api/article")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -110,17 +110,15 @@ class ArticleControllerTest {
         currentArticle.setAuthor(new BloggerUser());
         currentArticle.getAuthor().setId(123);
 
-        Article article = new Article();
+        ArticleDto article = new ArticleDto();
         article.setId(1);
         article.setTitle("title2");
         article.setContent("content2");
 
-        Article updated = new Article();
+        ArticleDto updated = new ArticleDto();
         updated.setId(1);
         updated.setTitle("title2");
         updated.setContent("content2");
-        updated.setAuthor(new BloggerUser());
-        updated.getAuthor().setId(123);
 
         when(articleRepository.getOne(1)).thenReturn(currentArticle);
         when(articleService.update(refEq(article))).thenReturn(updated);

@@ -13,4 +13,12 @@ public class ArticleDtoMapper {
         articleDto.setReact(article.getUserReactions().size());
         return articleDto;
     }
+
+    public static Article toMoDel(ArticleDto articleDto){
+        Article article = new Article();
+        article.setId(articleDto.getId());
+        article.setTitle(articleDto.getTitle());
+        article.setContent(articleDto.getContent());
+        return article;
+    }
 }

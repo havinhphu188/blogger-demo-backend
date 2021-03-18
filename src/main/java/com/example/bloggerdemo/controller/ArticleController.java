@@ -42,24 +42,24 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Article> addArticle(@Valid @RequestBody Article article){
-        Article result = this.articleService
+    public ResponseEntity<ArticleDto> addArticle(@Valid @RequestBody ArticleDto article){
+        ArticleDto result = this.articleService
                 .save(article, getUserIdFromContext());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("react/{id}")
-    public ResponseEntity<Article> addReaction(@PathVariable int id){
+    public ResponseEntity<?> addReaction(@PathVariable int id){
         this.articleService.addUserReaction(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Article> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+    public ResponseEntity<ArticleDto> editArticle(@Valid @RequestBody ArticleDto article, @PathVariable int id){
         if (isAccessDenied(id))
             throw new NoAuthorizationException();
         article.setId(id);
-        Article result = this.articleService.update(article);
+        ArticleDto result = this.articleService.update(article);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
