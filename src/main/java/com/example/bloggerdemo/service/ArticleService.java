@@ -1,5 +1,7 @@
 package com.example.bloggerdemo.service;
 
+import com.example.bloggerdemo.dto.ArticleDto;
+import com.example.bloggerdemo.dto.mapper.ArticleDtoMapper;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.model.UserReaction;
@@ -9,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ArticleService {
@@ -30,8 +33,11 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public List<Article> findAllByUser(int userId) {
-        return articleRepository.findByAuthor(getBloggerUser(userId));
+    public List<ArticleDto> findAllByUser(int userId) {
+        return articleRepository
+                .findByAuthor(getBloggerUser(userId))
+                .stream().map(ArticleDtoMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private BloggerUser getBloggerUser(int userId){
@@ -52,8 +58,10 @@ public class ArticleService {
         this.articleRepository.deleteById(id);
     }
 
-    public List<Article> getGlobalFeed() {
-        return articleRepository.findAll();
+    public List<ArticleDto> getGlobalFeed() {
+        return articleRepository.findAll()
+                .stream().map(ArticleDtoMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional

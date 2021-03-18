@@ -1,5 +1,6 @@
 package com.example.bloggerdemo.controller;
 
+import com.example.bloggerdemo.dto.ArticleDto;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.ArticleRepository;
@@ -62,9 +63,9 @@ class ArticleControllerTest {
     @Test
     @WithMockCustomUser(userId = "123")
     void getAll() throws Exception{
-        List<Article> articles = new ArrayList<>();
-        articles.add(new Article());
-        Article article1 = new Article();
+        List<ArticleDto> articles = new ArrayList<>();
+        articles.add(new ArticleDto());
+        ArticleDto article1 = new ArticleDto();
         article1.setId(14);
         articles.add(article1);
         when(articleService.findAllByUser(123)).thenReturn(articles);

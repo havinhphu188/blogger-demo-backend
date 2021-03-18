@@ -1,5 +1,6 @@
 package com.example.bloggerdemo.controller;
 
+import com.example.bloggerdemo.dto.ArticleDto;
 import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
@@ -27,15 +28,15 @@ public class ArticleController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<Article>> getAll(){
-        List<Article> articles = this.articleService
+    public ResponseEntity<List<ArticleDto>> getAll(){
+        List<ArticleDto> articles = this.articleService
                 .findAllByUser(getUserIdFromContext());
         return ResponseEntity.ok(articles);
     }
 
     @GetMapping("global-feed")
-    public ResponseEntity<List<Article>> getGlobalFeed(){
-        List<Article> articles = this.articleService
+    public ResponseEntity<List<ArticleDto>> getGlobalFeed(){
+        List<ArticleDto> articles = this.articleService
                 .getGlobalFeed();
         return ResponseEntity.ok(articles);
     }
