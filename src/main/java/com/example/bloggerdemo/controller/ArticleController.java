@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,10 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<ArticleVm> addArticle(@Valid @RequestBody Article article){
+    public ResponseEntity<ArticleVm> addArticle(@Valid @RequestBody ArticleParam articleParam){
+        Article article = new Article();
+        article.setTitle(articleParam.getTitle());
+        article.setContent(articleParam.getContent());
         Article result = this.articleService
                 .save(article, getUserIdFromContext());
         return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
@@ -61,10 +65,15 @@ public class ArticleController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ArticleVm> editArticle(@Valid @RequestBody Article article, @PathVariable int id){
+    public ResponseEntity<ArticleVm> editArticle(
+            @Valid @RequestBody ArticleParam articleParam
+            , @PathVariable int id){
         if (isAccessDenied(id))
             throw new NoAuthorizationException();
+        Article article = new Article();
         article.setId(id);
+        article.setTitle(articleParam.getTitle());
+        article.setContent(articleParam.getContent());
         Article result = this.articleService.update(article);
         return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
     }
@@ -96,13 +105,21 @@ class ArticleVm {
     private String title;
     private String content;
     private String author;
-    private int userReactions;
+    private int react;
 
     public ArticleVm(Article article){
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.author = article.getAuthor().getUsername();
-        this.userReactions = article.getUserReactions().size();
+        this.react = article.getUserReactions().size();
     }
+}
+
+@Getter @Setter
+class ArticleParam{
+    @NotNull
+    private String title;
+    @NotNull
+    private String content;
 }
