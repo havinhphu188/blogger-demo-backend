@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,8 @@ public class Article {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserReaction> userReactions = new HashSet<>();
+
+    private LocalDateTime createAt = LocalDateTime.now();;
 
     public void addUserReaction(UserReaction userReaction) {
         userReactions.add( userReaction );
