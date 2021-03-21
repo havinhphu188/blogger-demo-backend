@@ -69,7 +69,7 @@ class ArticleServiceTest {
 
         articleService.findAllByUser(123);
 
-        verify(articleRepository).findByAuthor(bloggerUser);
+        verify(articleRepository).findByAuthorOrderByCreateAtDesc(bloggerUser);
     }
 
     @Test
@@ -82,7 +82,7 @@ class ArticleServiceTest {
             articleService.findAllByUser(123);
         });
 
-        verify(articleRepository, never()).findByAuthor(bloggerUser);
+        verify(articleRepository, never()).findByAuthorOrderByCreateAtDesc(bloggerUser);
     }
 
     @Test

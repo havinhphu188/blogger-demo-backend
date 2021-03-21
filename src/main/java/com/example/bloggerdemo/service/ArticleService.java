@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Component
@@ -31,7 +29,7 @@ public class ArticleService {
     }
 
     public List<Article> findAllByUser(int userId) {
-        return articleRepository.findByAuthor(getBloggerUser(userId));
+        return articleRepository.findByAuthorOrderByCreateAtDesc(getBloggerUser(userId));
     }
 
     private BloggerUser getBloggerUser(int userId){
@@ -53,7 +51,7 @@ public class ArticleService {
     }
 
     public List<Article> getGlobalFeed() {
-        return articleRepository.findAll();
+        return articleRepository.findAllByOrderByCreateAtDesc();
     }
 
     @Transactional

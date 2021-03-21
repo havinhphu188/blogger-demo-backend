@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
-    List<Article> findByAuthor(BloggerUser author);
+    List<Article> findByAuthorOrderByCreateAtDesc(BloggerUser author);
+    List<Article> findAllByOrderByCreateAtDesc();
 }
