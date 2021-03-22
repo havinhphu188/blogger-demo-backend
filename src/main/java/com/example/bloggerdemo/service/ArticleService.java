@@ -54,8 +54,13 @@ public class ArticleService {
     }
 
     @Transactional
-    public void addUserReaction(int articleId, int userId){
-        this.articleRepository.addUserReactionByArticleId(articleId, userId);
+    public void addOrRemoveUserReaction(int articleId, int userId){
+        boolean isUserReacted = this.articleRepository.isUserReacted(articleId,userId);
+        if (isUserReacted){
+            this.articleRepository.addUserReactionByArticleId(articleId, userId);
+        }else{
+            this.articleRepository.removeUserReaction(articleId, userId);
+        }
     }
 }
 

@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ArticleController {
 
     @PostMapping("react/{id}")
     public ResponseEntity<?> addReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
-        this.articleService.addUserReaction(id, Integer.parseInt(userId));
+        this.articleService.addOrRemoveUserReaction(id, Integer.parseInt(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
