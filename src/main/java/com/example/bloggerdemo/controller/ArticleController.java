@@ -4,6 +4,7 @@ import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
+import com.example.bloggerdemo.viewmodel.ArticleFeedNoReactVm;
 import com.example.bloggerdemo.viewmodel.ArticleFeedVm;
 import com.example.bloggerdemo.viewmodel.ArticleVm;
 import com.example.bloggerdemo.viewmodel.util.BloggerResponseEntity;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/article")
@@ -38,14 +41,18 @@ public class ArticleController {
     public ResponseEntity<?> getAll(){
         List<Article> articles = this.articleService
                 .findAllByUser(getUserIdFromContext());
-        return BloggerResponseEntity.ok(new ArticleFeedVm(articles));
+        return BloggerResponseEntity.ok(new ArticleFeedNoReactVm(articles));
     }
 
     @GetMapping("global-feed")
     public ResponseEntity<?> getGlobalFeed(@AuthenticationPrincipal String userId){
         List<Article> articles = this.articleService
                 .getGlobalFeed();
-        return BloggerResponseEntity.ok(new ArticleFeedVm(articles));
+        Map<Integer, Boolean> isReactedMap =
+                this.articleService
+                        .checkIfCurrentUserReactToArticle
+                                (Integer.parseInt(userId),articles);
+        return BloggerResponseEntity.ok(new ArticleFeedVm(articles, isReactedMap));
     }
 
     @PostMapping()
@@ -60,8 +67,10 @@ public class ArticleController {
 
     @PostMapping("react/{id}")
     public ResponseEntity<?> addReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
-        this.articleService.addOrRemoveUserReaction(id, Integer.parseInt(userId));
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean isUserReacted = this.articleService.addOrRemoveUserReaction(id, Integer.parseInt(userId));
+        Map<String,Boolean> response =new HashMap<>();
+        response.put("isReacted",isUserReacted);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("{id}")

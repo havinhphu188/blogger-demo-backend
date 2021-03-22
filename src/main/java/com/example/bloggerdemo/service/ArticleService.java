@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ArticleService {
@@ -54,13 +56,23 @@ public class ArticleService {
     }
 
     @Transactional
-    public void addOrRemoveUserReaction(int articleId, int userId){
+    public boolean addOrRemoveUserReaction(int articleId, int userId){
         boolean isUserReacted = this.articleRepository.isUserReacted(articleId,userId);
         if (isUserReacted){
             this.articleRepository.removeUserReaction(articleId, userId);
         }else{
             this.articleRepository.addUserReactionByArticleId(articleId, userId);
         }
+        return !isUserReacted;
+    }
+
+    public Map<Integer, Boolean> checkIfCurrentUserReactToArticle(int userId, List<Article> articles) {
+        Map<Integer, Boolean> result = new HashMap<>();
+        articles.forEach(article -> {
+            boolean isUserReacted = this.articleRepository.isUserReacted(article.getId(), userId);
+            result.put(article.getId(), isUserReacted);
+        });
+        return result;
     }
 }
 

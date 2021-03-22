@@ -6,15 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter @Setter
 public class ArticleFeedVm implements ViewModel {
     List<ArticleVm> articleVms;
 
-    public ArticleFeedVm(List<Article> articles) {
+    public ArticleFeedVm(List<Article> articles, Map<Integer, Boolean>isReactedMap) {
          articleVms = articles.stream()
-                .map(ArticleVm::new).collect(Collectors.toList());
+                .map(article -> {
+                    ArticleVm articleVm = new ArticleVm(article);
+                    articleVm.setReacted(isReactedMap.get(article.getId()));
+                    return articleVm;
+                }).collect(Collectors.toList());
     }
 
     @Override

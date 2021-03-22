@@ -13,6 +13,7 @@ public class ArticleVm implements ViewModel {
     private String content;
     private String author;
     private int react;
+    private boolean reacted;
 
     public ArticleVm(Article article){
         this.id = article.getId();
