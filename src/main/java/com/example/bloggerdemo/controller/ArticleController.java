@@ -4,6 +4,9 @@ import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.service.ArticleService;
+import com.example.bloggerdemo.viewmodel.ArticleFeedVm;
+import com.example.bloggerdemo.viewmodel.ArticleVm;
+import com.example.bloggerdemo.viewmodel.util.BloggerResponseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/article")
@@ -33,31 +35,27 @@ public class ArticleController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<ArticleVm>> getAll(){
+    public ResponseEntity<?> getAll(){
         List<Article> articles = this.articleService
                 .findAllByUser(getUserIdFromContext());
-        List<ArticleVm> articleVms = articles.stream()
-                .map(ArticleVm::new).collect(Collectors.toList());
-        return ResponseEntity.ok(articleVms);
+        return BloggerResponseEntity.ok(new ArticleFeedVm(articles));
     }
 
     @GetMapping("global-feed")
-    public ResponseEntity<List<ArticleVm>> getGlobalFeed(){
+    public ResponseEntity<?> getGlobalFeed(@AuthenticationPrincipal String userId){
         List<Article> articles = this.articleService
                 .getGlobalFeed();
-        List<ArticleVm> articleVms = articles.stream()
-                .map(ArticleVm::new).collect(Collectors.toList());
-        return ResponseEntity.ok(articleVms);
+        return BloggerResponseEntity.ok(new ArticleFeedVm(articles));
     }
 
     @PostMapping()
-    public ResponseEntity<ArticleVm> addArticle(@Valid @RequestBody ArticleParam articleParam){
+    public ResponseEntity<?> addArticle(@Valid @RequestBody ArticleParam articleParam){
         Article article = new Article();
         article.setTitle(articleParam.getTitle());
         article.setContent(articleParam.getContent());
         Article result = this.articleService
                 .save(article, getUserIdFromContext());
-        return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
+        return BloggerResponseEntity.ok(new ArticleVm(result));
     }
 
     @PostMapping("react/{id}")
@@ -98,24 +96,6 @@ public class ArticleController {
         return article.getAuthor().getId() != getUserIdFromContext();
     }
 
-}
-
-@Getter
-@Setter
-class ArticleVm {
-    private Integer id;
-    private String title;
-    private String content;
-    private String author;
-    private int react;
-
-    public ArticleVm(Article article){
-        this.id = article.getId();
-        this.title = article.getTitle();
-        this.content = article.getContent();
-        this.author = article.getAuthor().getUsername();
-        this.react = article.getUserReactions().size();
-    }
 }
 
 @Getter @Setter
