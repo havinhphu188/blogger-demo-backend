@@ -16,10 +16,10 @@ public class UserReaction {
 
     private String mark;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Article article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private BloggerUser bloggerUser;
 
 }

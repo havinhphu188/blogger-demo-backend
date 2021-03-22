@@ -35,7 +35,7 @@ public class CustomArticleRepositoryImpl implements CustomArticleRepository {
                 .setParameter("articleId",articleId)
                 .setParameter("userId", userId)
                 .getResultList();
-        return result.isEmpty();
+        return !result.isEmpty();
     }
 
     @Override
