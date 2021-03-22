@@ -2,6 +2,7 @@ package com.example.bloggerdemo.model;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Entity
 public class Article {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "Title is mandatory")

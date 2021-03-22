@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"article_id", "blogger_user_id"})})
 public class UserReaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String mark;
