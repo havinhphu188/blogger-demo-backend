@@ -54,8 +54,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public void addUserReaction(int articleId){
-        this.articleRepository.addUserReactionByArticleId(articleId);
+    public void addUserReaction(int articleId, int userId){
+        this.articleRepository.addUserReactionByArticleId(articleId, userId);
     }
 }
 

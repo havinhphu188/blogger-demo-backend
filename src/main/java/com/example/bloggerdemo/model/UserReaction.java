@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"article_id", "blogger_user_id"})})
 public class UserReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,8 +17,9 @@ public class UserReaction {
     private String mark;
 
     @ManyToOne
-    @JoinColumn(name = "article_id")
     private Article article;
 
+    @ManyToOne
+    private BloggerUser bloggerUser;
 
 }

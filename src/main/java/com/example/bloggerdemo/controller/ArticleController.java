@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -59,8 +60,8 @@ public class ArticleController {
     }
 
     @PostMapping("react/{id}")
-    public ResponseEntity<?> addReaction(@PathVariable int id){
-        this.articleService.addUserReaction(id);
+    public ResponseEntity<?> addReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
+        this.articleService.addUserReaction(id, Integer.parseInt(userId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
