@@ -2,7 +2,6 @@ package com.example.bloggerdemo.service;
 
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
-import com.example.bloggerdemo.model.UserReaction;
 import com.example.bloggerdemo.repository.ArticleRepository;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +55,7 @@ public class ArticleService {
 
     @Transactional
     public void addUserReaction(int articleId){
-        Article article = this.articleRepository.getOne(articleId);
-        article.addUserReaction(new UserReaction());
-        this.articleRepository.save(article);
+        this.articleRepository.addUserReactionByArticleId(articleId);
     }
 }
 
