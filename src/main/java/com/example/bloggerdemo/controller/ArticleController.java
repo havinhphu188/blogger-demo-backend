@@ -48,6 +48,10 @@ public class ArticleController {
     public ResponseEntity<?> getGlobalFeed(@AuthenticationPrincipal String userId){
         List<Article> articles = this.articleService
                 .getGlobalFeed();
+        if (userId.equals("anonymousUser")){
+            return BloggerResponseEntity.ok(new ArticleFeedNoReactVm(articles));
+        }
+
         Map<Integer, Boolean> isReactedMap =
                 this.articleService
                         .checkIfCurrentUserReactToArticle
