@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     @GetMapping("user-info")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String userId){
+    public ResponseEntity<?> getCurrentUserInfo(@AuthenticationPrincipal String userId){
         BloggerUser bloggerUser = this.bloggerUserRepository
                 .findById(Integer.parseInt(userId))
                 .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
