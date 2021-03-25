@@ -70,7 +70,7 @@ public class ArticleController {
     }
 
     @PostMapping("react/{id}")
-    public ResponseEntity<?> addReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
+    public ResponseEntity<?> addOrRemoveReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
         boolean isUserReacted = this.articleService.addOrRemoveUserReaction(id, Integer.parseInt(userId));
         Map<String,Boolean> response =new HashMap<>();
         response.put("isReacted",isUserReacted);

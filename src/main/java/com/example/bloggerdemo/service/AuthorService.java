@@ -24,7 +24,7 @@ public class AuthorService {
     }
 
     @Transactional
-    public boolean subscribeToAuthor(int authorId, int userId){
+    public boolean subscribeOrUnsubcribeToAuthor(int authorId, int userId){
         boolean isUserFollowAuthor = this.bloggerUserRepository.isUserSubscribeToAuthor(authorId, userId);
         if (isUserFollowAuthor){
             this.bloggerUserRepository.unsubscribeToAuthor(authorId, userId);

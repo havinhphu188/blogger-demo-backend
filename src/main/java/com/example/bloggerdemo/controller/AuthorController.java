@@ -32,8 +32,8 @@ public class AuthorController {
     }
 
     @PostMapping("subscribe/{authorId}")
-    public ResponseEntity<?> addReaction(@PathVariable int authorId, @AuthenticationPrincipal String userId){
-        boolean isUserSubscribeToAuthor = authorService.subscribeToAuthor(authorId,Integer.parseInt(userId));
+    public ResponseEntity<?> subscribeOrUnsubscribeAuthor(@PathVariable int authorId, @AuthenticationPrincipal String userId){
+        boolean isUserSubscribeToAuthor = authorService.subscribeOrUnsubcribeToAuthor(authorId,Integer.parseInt(userId));
         Map<String, Boolean> result = new HashMap<>();
         result.put("isSubscribed", isUserSubscribeToAuthor);
         return ResponseEntity.ok(result);
