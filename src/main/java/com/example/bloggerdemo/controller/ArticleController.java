@@ -99,6 +99,18 @@ public class ArticleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("subscriptions-feed")
+    public ResponseEntity<?> getSubscriptionFeed(@AuthenticationPrincipal String userId){
+        List<Article> articles = this.articleService
+                .getSubscriptionFeedByUser(getUserIdFromContext());
+
+        Map<Integer, Boolean> isReactedMap =
+                this.articleService
+                        .checkIfCurrentUserReactToArticle
+                                (Integer.parseInt(userId),articles);
+        return BloggerResponseEntity.ok(new ArticleFeedVm(articles, isReactedMap));
+    }
+
     private int getUserIdFromContext(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Integer.parseInt((String) securityContext.getAuthentication().getPrincipal());

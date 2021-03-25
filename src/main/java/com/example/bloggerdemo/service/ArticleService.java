@@ -74,5 +74,9 @@ public class ArticleService {
         });
         return result;
     }
+
+    public List<Article> getSubscriptionFeedByUser(int userId) {
+        return articleRepository.getArticleBySubscription(userId);
+    }
 }
 

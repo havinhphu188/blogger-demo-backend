@@ -45,4 +45,16 @@ public class CustomArticleRepositoryImpl implements CustomArticleRepository {
                 .setParameter("userId", userId)
                 .executeUpdate();
     }
+
+    @Override
+    public List<Article> getArticleBySubscription(Integer userId) {
+        List article = entityManager.createQuery("select a from Article a " +
+                "where a.author.id in  " +
+                "(select sub.followee from Subscription sub " +
+                "where sub.follower.id = :userId) order by a.createAt desc")
+                .setParameter("userId", userId)
+                .getResultList();
+
+        return article;
+    }
 }
