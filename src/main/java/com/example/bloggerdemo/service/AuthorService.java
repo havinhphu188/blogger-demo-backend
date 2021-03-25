@@ -33,4 +33,9 @@ public class AuthorService {
         }
         return !isUserFollowAuthor;
     }
+
+    public boolean isUserSubscribeToAuthor(int authorId, int userId) {
+         return this.bloggerUserRepository
+                 .isUserSubscribeToAuthor(authorId, userId);
+    }
 }

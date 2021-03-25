@@ -24,9 +24,11 @@ public class AuthorController {
     }
 
     @GetMapping("get-info/{authorId}")
-    public ResponseEntity<?> getCurrentUserInfo(@PathVariable int authorId){
+    public ResponseEntity<?> getCurrentUserInfo(@PathVariable int authorId, @AuthenticationPrincipal String userId){
+
         BloggerUser author = authorService.getAuthorInfo(authorId);
-        return BloggerResponseEntity.ok(new AuthorVm(author));
+        boolean isSubscribed = authorService.isUserSubscribeToAuthor(authorId,Integer.parseInt(userId));
+        return BloggerResponseEntity.ok(new AuthorVm(author, isSubscribed));
     }
 
     @PostMapping("subscribe/{authorId}")
