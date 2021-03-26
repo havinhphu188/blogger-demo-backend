@@ -78,5 +78,10 @@ public class ArticleService {
     public List<Article> getSubscriptionFeedByUser(int userId) {
         return articleRepository.getArticleBySubscription(userId);
     }
+
+    public List<Article> getAuthorFeed(int authorId) {
+        return articleRepository.findAllByAuthorId(authorId);
+    }
+
 }
 

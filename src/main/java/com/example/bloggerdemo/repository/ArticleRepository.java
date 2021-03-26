@@ -10,4 +10,5 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Integer>, CustomArticleRepository {
     List<Article> findByAuthorOrderByCreateAtDesc(BloggerUser author);
     List<Article> findAllByOrderByCreateAtDesc();
+    List<Article> findAllByAuthorId(Integer authorId);
 }
