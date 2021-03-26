@@ -24,7 +24,7 @@ public class ArticleVm implements ViewModel {
         this.title = article.getTitle();
         this.content = article.getContent();
         this.author = new HashMap<>();
-        author.put("name", article.getAuthor().getUsername());
+        author.put("name", article.getAuthor().getDisplayName());
         author.put("url", String.valueOf(article.getAuthor().getId()));
         this.react = article.getUserReactions().size();
     }

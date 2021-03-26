@@ -23,4 +23,8 @@ public class BloggerUser  {
     @JsonIgnore
     private String password;
 
+    private String displayName;
+
+    private String bio;
+
 }

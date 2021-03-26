@@ -40,7 +40,7 @@ public class AccountController {
                 .findById(Integer.parseInt(userId))
                 .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
         Map<String, String> result = new HashMap<>();
-        result.put("username", bloggerUser.getUsername());
+        result.put("username", bloggerUser.getDisplayName());
         return ResponseEntity.ok(result);
     }
 }

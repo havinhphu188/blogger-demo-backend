@@ -9,10 +9,12 @@ import lombok.Setter;
 @Setter
 public class AuthorVm implements ViewModel {
     private String name;
+    private String bio;
     private boolean subscribed;
 
     public AuthorVm(BloggerUser bloggerUser, boolean isSubscribed) {
-        name = bloggerUser.getUsername();
+        name = bloggerUser.getDisplayName();
+        bio = bloggerUser.getBio();
         subscribed = isSubscribed;
     }
 
