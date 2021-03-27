@@ -1,8 +1,8 @@
 package com.example.bloggerdemo.configuration;
 
+import com.example.bloggerdemo.security.JwtAuthenticationEntryPoint;
 import com.example.bloggerdemo.security.JwtRequestFilter;
 import com.example.bloggerdemo.security.JwtUserDetailsService;
-import com.example.bloggerdemo.security.JwtAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/api/authenticate").permitAll()
                     .antMatchers("/api/article/global-feed").permitAll()
+                    .antMatchers("/api/account/user-info").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
