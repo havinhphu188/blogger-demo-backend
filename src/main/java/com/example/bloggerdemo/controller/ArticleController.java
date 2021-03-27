@@ -69,11 +69,13 @@ public class ArticleController {
         return BloggerResponseEntity.ok(new ArticleVm(result));
     }
 
-    @PostMapping("react/{id}")
-    public ResponseEntity<?> addOrRemoveReaction(@PathVariable int id, @AuthenticationPrincipal String userId){
-        boolean isUserReacted = this.articleService.addOrRemoveUserReaction(id, Integer.parseInt(userId));
-        Map<String,Boolean> response =new HashMap<>();
+    @PostMapping("react/{articleId}")
+    public ResponseEntity<?> addOrRemoveReaction(@PathVariable int articleId, @AuthenticationPrincipal String userId){
+        boolean isUserReacted = this.articleService.addOrRemoveUserReaction(articleId, Integer.parseInt(userId));
+        int numberOfReaction = this.articleService.getNumberOfReaction(articleId);
+        Map<String,Object> response =new HashMap<>();
         response.put("isReacted",isUserReacted);
+        response.put("reaction", numberOfReaction);
         return ResponseEntity.ok(response);
     }
 

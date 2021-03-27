@@ -83,5 +83,8 @@ public class ArticleService {
         return articleRepository.findAllByAuthorId(authorId);
     }
 
+    public int getNumberOfReaction(int articleId) {
+        return articleRepository.getNumberOfReaction(articleId);
+    }
 }
 
