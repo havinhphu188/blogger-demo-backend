@@ -2,7 +2,10 @@ package com.example.bloggerdemo.controller;
 
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
+import com.example.bloggerdemo.service.AccountService;
 import com.example.bloggerdemo.service.StorageService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,12 +24,14 @@ public class AccountController {
 
     private final StorageService storageService;
     private final BloggerUserRepository bloggerUserRepository;
+    private final AccountService accountService;
 
     @Autowired
-    public AccountController(StorageService storageService
-            , BloggerUserRepository bloggerUserRepository) {
+    public AccountController(StorageService storageService,
+                             BloggerUserRepository bloggerUserRepository, AccountService accountService) {
         this.storageService = storageService;
         this.bloggerUserRepository = bloggerUserRepository;
+        this.accountService = accountService;
     }
 
     @PostMapping()
@@ -44,4 +50,31 @@ public class AccountController {
         result.put("username", bloggerUser.getDisplayName());
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("register")
+    public ResponseEntity<?> registerUser(@RequestBody UserParam user){
+        BloggerUser bloggerUser = new BloggerUser();
+        bloggerUser.setUsername(user.getUsername());
+        bloggerUser.setDisplayName(user.getDisplayName());
+        bloggerUser.setBio(user.getBio());
+        bloggerUser.setPassword(user.getPassword());
+
+        this.accountService.registerUser(bloggerUser);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+}
+
+@Getter
+@Setter
+class UserParam{
+    @NotNull
+    private String username;
+    @NotNull
+    private String password;
+
+    private String displayName;
+
+    private String bio;
+
 }
