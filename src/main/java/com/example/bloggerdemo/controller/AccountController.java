@@ -63,6 +63,13 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("check-if-username-unique")
+    public ResponseEntity<?> isUsernameUnique(@RequestParam("username")String username){
+        boolean result = this.accountService.isUsernameUnique(username);
+        return ResponseEntity.ok(result);
+    }
+
+
 }
 
 @Getter

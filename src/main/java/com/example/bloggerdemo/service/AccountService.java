@@ -17,4 +17,8 @@ public class AccountService {
     public void registerUser(BloggerUser bloggerUser) {
         this.bloggerUserRepository.save(bloggerUser);
     }
+
+    public boolean isUsernameUnique(String username) {
+        return !this.bloggerUserRepository.existsByUsername(username);
+    }
 }
