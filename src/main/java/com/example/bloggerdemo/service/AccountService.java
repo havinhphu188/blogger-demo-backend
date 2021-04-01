@@ -21,4 +21,8 @@ public class AccountService {
     public boolean isUsernameUnique(String username) {
         return !this.bloggerUserRepository.existsByUsername(username);
     }
+
+    public boolean isDisplayNameUnique(String displayName) {
+        return !this.bloggerUserRepository.existsByDisplayName(displayName);
+    }
 }

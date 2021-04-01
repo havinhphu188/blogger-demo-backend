@@ -69,7 +69,11 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-
+    @GetMapping("check-if-display-name-unique")
+    public ResponseEntity<?> isDisplayNameUnique(@RequestParam("displayName")String displayName){
+        boolean result = this.accountService.isDisplayNameUnique(displayName);
+        return ResponseEntity.ok(result);
+    }
 }
 
 @Getter

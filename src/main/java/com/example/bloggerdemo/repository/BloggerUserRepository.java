@@ -15,4 +15,6 @@ public interface BloggerUserRepository extends JpaRepository<BloggerUser, Intege
     List<BloggerUser> findByDisplayNameContainingIgnoreCase(@Param("searchTerm")String searchTerm);
 
     boolean existsByUsername(String username);
+
+    boolean existsByDisplayName(String displayName);
 }

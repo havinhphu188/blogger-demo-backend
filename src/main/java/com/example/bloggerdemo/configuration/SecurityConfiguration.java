@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/account/user-info").permitAll()
                     .antMatchers("/api/account/register").permitAll()
                     .antMatchers("/api/account/check-if-username-unique").permitAll()
+                    .antMatchers("/api/account/check-if-display-name-unique").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
