@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.service;
+package com.example.bloggerdemo.service.business;
 
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;

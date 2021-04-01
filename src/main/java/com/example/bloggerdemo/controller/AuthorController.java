@@ -1,7 +1,7 @@
 package com.example.bloggerdemo.controller;
 
 import com.example.bloggerdemo.model.BloggerUser;
-import com.example.bloggerdemo.service.AuthorService;
+import com.example.bloggerdemo.service.business.AuthorService;
 import com.example.bloggerdemo.viewmodel.AuthorVm;
 import com.example.bloggerdemo.viewmodel.util.BloggerResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;

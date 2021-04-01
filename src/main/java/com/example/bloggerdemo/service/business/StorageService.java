@@ -1,4 +1,4 @@
-package com.example.bloggerdemo.service;
+package com.example.bloggerdemo.service.business;
 
 import org.springframework.web.multipart.MultipartFile;
 

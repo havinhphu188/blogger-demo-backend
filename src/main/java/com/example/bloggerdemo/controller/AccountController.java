@@ -2,8 +2,8 @@ package com.example.bloggerdemo.controller;
 
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
-import com.example.bloggerdemo.service.AccountService;
-import com.example.bloggerdemo.service.StorageService;
+import com.example.bloggerdemo.service.business.AccountService;
+import com.example.bloggerdemo.service.business.StorageService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

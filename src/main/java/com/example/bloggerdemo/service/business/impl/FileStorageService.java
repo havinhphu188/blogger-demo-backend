@@ -1,7 +1,7 @@
-package com.example.bloggerdemo.service.impl;
+package com.example.bloggerdemo.service.business.impl;
 
 import com.example.bloggerdemo.exception.StorageException;
-import com.example.bloggerdemo.service.StorageService;
+import com.example.bloggerdemo.service.business.StorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;

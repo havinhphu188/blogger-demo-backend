@@ -3,7 +3,7 @@ package com.example.bloggerdemo.controller;
 import com.example.bloggerdemo.exception.NoAuthorizationException;
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.repository.ArticleRepository;
-import com.example.bloggerdemo.service.ArticleService;
+import com.example.bloggerdemo.service.business.ArticleService;
 import com.example.bloggerdemo.viewmodel.ArticleFeedNoReactVm;
 import com.example.bloggerdemo.viewmodel.ArticleFeedVm;
 import com.example.bloggerdemo.viewmodel.ArticleVm;
