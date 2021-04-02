@@ -63,17 +63,13 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("check-if-username-unique")
-    public ResponseEntity<?> isUsernameUnique(@RequestParam("username")String username){
-        boolean result = this.accountService.isUsernameUnique(username);
+    @GetMapping("check-if-field-unique")
+    public ResponseEntity<?> isUsernameUnique(@RequestParam("fieldName")String fieldName,
+                                              @RequestParam("fieldValue")String fieldValue){
+        boolean result = this.accountService.checkIfFieldUnique(fieldName, fieldValue);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("check-if-display-name-unique")
-    public ResponseEntity<?> isDisplayNameUnique(@RequestParam("displayName")String displayName){
-        boolean result = this.accountService.isDisplayNameUnique(displayName);
-        return ResponseEntity.ok(result);
-    }
 }
 
 @Getter
