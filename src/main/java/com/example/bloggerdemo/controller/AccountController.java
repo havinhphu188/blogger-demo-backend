@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,11 +22,15 @@ import java.util.Map;
 public class AccountController {
     private final BloggerUserRepository bloggerUserRepository;
     private final AccountService accountService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountController(BloggerUserRepository bloggerUserRepository, AccountService accountService) {
+    public AccountController(BloggerUserRepository bloggerUserRepository,
+                             AccountService accountService,
+                             PasswordEncoder passwordEncoder) {
         this.bloggerUserRepository = bloggerUserRepository;
         this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("user-info")
@@ -45,7 +50,7 @@ public class AccountController {
         bloggerUser.setUsername(user.getUsername());
         bloggerUser.setDisplayName(user.getDisplayName());
         bloggerUser.setBio(user.getBio());
-        bloggerUser.setPassword(user.getPassword());
+        bloggerUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         this.accountService.registerUser(bloggerUser);
         return new ResponseEntity<>(HttpStatus.OK);
