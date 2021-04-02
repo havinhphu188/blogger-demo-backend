@@ -30,7 +30,7 @@ public class AccountService {
     }
 
     public boolean checkIfFieldUnique(String fieldName, String fieldValue){
-        CheckUniqueStrategy strategy = CheckUniqueStrategy.valueOf(fieldName);
+        CheckUniqueStrategy strategy = CheckUniqueStrategy.fromAbbr(fieldName);
         return checkUniqueStrategies.get(strategy).isUnique(fieldValue);
     }
 }
