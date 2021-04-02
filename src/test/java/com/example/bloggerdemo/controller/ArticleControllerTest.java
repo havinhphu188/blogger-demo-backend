@@ -21,7 +21,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -101,7 +102,7 @@ class ArticleControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("title1")));
-        verify(articleService).save(refEq(article1),eq(123));
+        verify(articleService).save(any(Article.class),eq(123));
     }
 
     @Test
@@ -124,7 +125,7 @@ class ArticleControllerTest {
         updated.setAuthor(new BloggerUser());
         updated.getAuthor().setId(123);
         when(articleRepository.getOne(1)).thenReturn(currentArticle);
-        when(articleService.update(refEq(article))).thenReturn(updated);
+        when(articleService.update(any(Article.class))).thenReturn(updated);
         this.mockMvc.perform(put("/api/article/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -135,7 +136,7 @@ class ArticleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("title2")));
 
-        verify(this.articleService).update(refEq(article));
+        verify(this.articleService).update(any(Article.class));
     }
 
     @Test
