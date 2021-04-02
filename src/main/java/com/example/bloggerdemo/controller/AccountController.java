@@ -3,7 +3,6 @@ package com.example.bloggerdemo.controller;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
 import com.example.bloggerdemo.service.business.AccountService;
-import com.example.bloggerdemo.service.business.StorageService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
@@ -21,23 +19,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/account")
 public class AccountController {
-
-    private final StorageService storageService;
     private final BloggerUserRepository bloggerUserRepository;
     private final AccountService accountService;
 
     @Autowired
-    public AccountController(StorageService storageService,
-                             BloggerUserRepository bloggerUserRepository, AccountService accountService) {
-        this.storageService = storageService;
+    public AccountController(BloggerUserRepository bloggerUserRepository, AccountService accountService) {
         this.bloggerUserRepository = bloggerUserRepository;
         this.accountService = accountService;
-    }
-
-    @PostMapping()
-    public ResponseEntity<?> handleFileUpload(@RequestParam("filexx") MultipartFile file) {
-        storageService.store(file);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("user-info")
