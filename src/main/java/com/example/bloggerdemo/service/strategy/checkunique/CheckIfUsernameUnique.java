@@ -4,7 +4,7 @@ import com.example.bloggerdemo.repository.BloggerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("username")
+@Service
 public class CheckIfUsernameUnique implements CheckUnique {
     private final BloggerUserRepository bloggerUserRepository;
 
@@ -16,5 +16,10 @@ public class CheckIfUsernameUnique implements CheckUnique {
     @Override
     public boolean isUnique(String username) {
         return !this.bloggerUserRepository.existsByUsername(username);
+    }
+
+    @Override
+    public CheckUniqueStrategy getStrategyName() {
+        return CheckUniqueStrategy.USERNAME;
     }
 }

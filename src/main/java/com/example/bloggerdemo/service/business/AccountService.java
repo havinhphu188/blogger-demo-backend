@@ -3,20 +3,26 @@ package com.example.bloggerdemo.service.business;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
 import com.example.bloggerdemo.service.strategy.checkunique.CheckUnique;
+import com.example.bloggerdemo.service.strategy.checkunique.CheckUniqueStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class AccountService {
     private final BloggerUserRepository bloggerUserRepository;
-    private final Map<String, CheckUnique> checkUniqueStrategies;
+    private final Map<CheckUniqueStrategy, CheckUnique> checkUniqueStrategies = new HashMap<>();
 
     @Autowired
-    public AccountService(BloggerUserRepository bloggerUserRepository, Map<String, CheckUnique> checkUniqueStrategies) {
+    public AccountService(BloggerUserRepository bloggerUserRepository,
+                          List<CheckUnique> strategies) {
         this.bloggerUserRepository = bloggerUserRepository;
-        this.checkUniqueStrategies = checkUniqueStrategies;
+        strategies.forEach(checkUnique -> {
+            this.checkUniqueStrategies.put(checkUnique.getStrategyName(),checkUnique);
+        });
     }
 
     public void registerUser(BloggerUser bloggerUser) {
@@ -24,9 +30,7 @@ public class AccountService {
     }
 
     public boolean checkIfFieldUnique(String fieldName, String fieldValue){
-        if (!checkUniqueStrategies.containsKey(fieldName)) {
-            throw new IllegalArgumentException("Field " + fieldName + " does not exist. ");
-        }
-        return checkUniqueStrategies.get(fieldName).isUnique(fieldValue);
+        CheckUniqueStrategy strategy = CheckUniqueStrategy.valueOf(fieldName);
+        return checkUniqueStrategies.get(strategy).isUnique(fieldValue);
     }
 }
