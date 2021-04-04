@@ -45,17 +45,20 @@ public class ArticleController {
     }
 
     @GetMapping("global-feed")
-    public ResponseEntity<?> getGlobalFeed(@AuthenticationPrincipal String userId){
+    public ResponseEntity<?> getGlobalFeed(@AuthenticationPrincipal String userIdString){
         List<Article> articles = this.articleService
                 .getGlobalFeed();
-        if (userId.equals("anonymousUser")){
+        int userId;
+        try {
+            userId = Integer.parseInt(userIdString);
+        } catch (NumberFormatException exception) {
             return BloggerResponseEntity.ok(new ArticleFeedNoReactVm(articles));
         }
 
         Map<Integer, Boolean> isReactedMap =
                 this.articleService
                         .checkIfCurrentUserReactToArticle
-                                (Integer.parseInt(userId),articles);
+                                (userId,articles);
         return BloggerResponseEntity.ok(new ArticleFeedVm(articles, isReactedMap));
     }
 
