@@ -19,6 +19,7 @@ import javax.persistence.Query;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -276,6 +277,24 @@ class ArticleControllerTest {
         assertEquals(UPDATED_TITLE, updatedArticle.getTitle());
         assertEquals(UPDATED_CONTENT, updatedArticle.getContent());
     }
+
+    @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testDeleteArticle() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+
+        mockMvc.perform(delete("/api/article/{articleId}", articleId))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        Article updatedArticle = entityManager.find(Article.class, articleId);
+        assertNull(updatedArticle);
+    }
+
+
 
     private Article createArticle(){
         BloggerUser bloggerUser = entityManager.getReference(BloggerUser.class, 1);
