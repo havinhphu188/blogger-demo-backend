@@ -33,3 +33,4 @@ build/
 .vscode/
 /src/test/java/com/example/bloggerdemo/integrationtest/Experiment.java
 /upload-dir
+/src/test/java/com/example/bloggerdemo/controller/ArticleControllerOldTest.java
