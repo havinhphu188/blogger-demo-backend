@@ -205,6 +205,46 @@ class ArticleControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testAddOrRemoveReact() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+        Query query = entityManager.createQuery("select count(r) from UserReaction r where r.article.id = :articleId")
+                .setParameter("articleId", articleId);
+        final long originalCountOfReact = (long) query.getSingleResult();
+
+        mockMvc.perform(post("/api/article/react/{articleId}",articleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \"\",\n" +
+                        "    \"content\": \"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isReacted").value(true))
+                .andExpect(jsonPath("$.reaction").value(originalCountOfReact + 1));
+
+        long afterApiCallReact = (long)query.getSingleResult();
+        assertEquals(originalCountOfReact+1,afterApiCallReact);
+
+        mockMvc.perform(post("/api/article/react/{articleId}",articleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \"\",\n" +
+                        "    \"content\": \"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isReacted").value(false))
+                .andExpect(jsonPath("$.reaction").value(originalCountOfReact));
+
+        afterApiCallReact = (long)query.getSingleResult();
+        assertEquals(originalCountOfReact,afterApiCallReact);
+    }
+
 
 
 
