@@ -280,6 +280,20 @@ class ArticleControllerTest {
     }
 
     @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testUpdateArticleWithInvalidForm() throws Exception {
+        mockMvc.perform(post("/api/article")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \"\",\n" +
+                        "    \"content\": \"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
     @WithMockCustomUser(userId = "2")
     @Test
     void testUpdateArticleWithNonOwner() throws Exception {

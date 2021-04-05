@@ -72,7 +72,7 @@ class UserParam{
     private String username;
     @NotNull
     private String password;
-
+    @NotNull
     private String displayName;
 
     private String bio;
