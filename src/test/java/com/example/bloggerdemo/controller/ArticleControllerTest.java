@@ -328,6 +328,33 @@ class ArticleControllerTest {
                 .andExpect(jsonPath("$.[0].reacted").exists());
     }
 
+    @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testAuthorFeed() throws Exception {
+        BloggerUser user2 = entityManager.getReference(BloggerUser.class, 2);
+
+        Article article1User2 = createArticle();
+        Article article2User2 = createArticle();
+
+        article1User2.setAuthor(user2);
+        article2User2.setAuthor(user2);
+
+        entityManager.persist(article1User2);
+        entityManager.persist(article2User2);
+
+        mockMvc.perform(get("/api/article/author-feed/{authorId}", 2))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.[0].id").isNumber())
+                .andExpect(jsonPath("$.[0].title").value(DEFAULT_TITLE))
+                .andExpect(jsonPath("$.[0].content").value(DEFAULT_CONTENT))
+                .andExpect(jsonPath("$.[0].author.name").isString())
+                .andExpect(jsonPath("$.[0].author.url").exists())
+                .andExpect(jsonPath("$.[0].react").exists())
+                .andExpect(jsonPath("$.[0].reacted").exists());
+    }
 
 
     private Article createArticle(){
