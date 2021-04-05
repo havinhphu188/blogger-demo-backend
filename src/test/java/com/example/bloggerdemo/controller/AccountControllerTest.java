@@ -4,9 +4,13 @@ import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,6 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 class AccountControllerTest extends BloggerTestBase {
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     @WithMockCustomUser(userId = CURRENT_USER_ID)
@@ -42,6 +49,15 @@ class AccountControllerTest extends BloggerTestBase {
                             .content(body.toString()))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        BloggerUser user = (BloggerUser) entityManager
+                .createQuery("select u from BloggerUser u where u.username = :username")
+                .setParameter("username", "user188Test").getSingleResult();
+
+        assertTrue(passwordEncoder.matches("pw00", user.getPassword()));
+        assertEquals("Lovely Cat",user.getDisplayName());
+        assertEquals("Life is a journey", user.getBio());
+
     }
 
     @Test

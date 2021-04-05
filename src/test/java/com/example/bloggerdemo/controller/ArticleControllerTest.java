@@ -81,7 +81,8 @@ class ArticleControllerTest extends BloggerTestBase {
     void getGlobalFeed() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = :authorId")
+        Query query = entityManager.createQuery("SELECT count(a) from Article a " +
+                "where a.author.id = :authorId")
                 .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
