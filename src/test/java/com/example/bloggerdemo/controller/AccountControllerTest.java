@@ -61,6 +61,49 @@ class AccountControllerTest extends BloggerTestBase {
     }
 
     @Test
-    void isUsernameUnique() {
+    @Transactional
+    void isUsernameUnique() throws Exception{
+        final String USERNAME = "AXXAAXX";
+        final String DISPLAY_NAME = "KKOOFFF";
+
+        mockMvc.perform(
+                get("/api/account/check-if-field-unique")
+                        .param("fieldName", "username")
+                        .param("fieldValue", USERNAME))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(true));
+
+        mockMvc.perform(
+                get("/api/account/check-if-field-unique")
+                        .param("fieldName", "displayName")
+                        .param("fieldValue", DISPLAY_NAME))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(true));
+
+        BloggerUser bloggerUser = new BloggerUser();
+        bloggerUser.setUsername(USERNAME);
+        bloggerUser.setPassword("efwfwscdc");
+        bloggerUser.setDisplayName(DISPLAY_NAME);
+        bloggerUser.setBio("eewfefw");
+
+        entityManager.persist(bloggerUser);
+
+        mockMvc.perform(
+                get("/api/account/check-if-field-unique")
+                        .param("fieldName", "username")
+                        .param("fieldValue", USERNAME))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(false));
+
+        mockMvc.perform(
+                get("/api/account/check-if-field-unique")
+                        .param("fieldName", "displayName")
+                        .param("fieldValue", DISPLAY_NAME))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(false));
     }
 }
