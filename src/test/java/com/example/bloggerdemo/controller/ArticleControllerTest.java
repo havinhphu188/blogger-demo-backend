@@ -280,6 +280,42 @@ class ArticleControllerTest {
     }
 
     @Transactional
+    @WithMockCustomUser(userId = "2")
+    @Test
+    void testUpdateArticleWithNonOwner() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+
+        mockMvc.perform(put("/api/article/{articleId}", articleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \""+ UPDATED_TITLE +"\",\n" +
+                        "    \"content\": \""+ UPDATED_CONTENT +"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Transactional
+    @WithAnonymousUser
+    @Test
+    void testUpdateArticleWithUnauthorizedUser() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+
+        mockMvc.perform(put("/api/article/{articleId}", articleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \""+ UPDATED_TITLE +"\",\n" +
+                        "    \"content\": \""+ UPDATED_CONTENT +"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
     @WithMockCustomUser(userId = "1")
     @Test
     void testDeleteArticle() throws Exception {
@@ -293,6 +329,32 @@ class ArticleControllerTest {
 
         Article updatedArticle = entityManager.find(Article.class, articleId);
         assertNull(updatedArticle);
+    }
+
+    @Transactional
+    @WithMockCustomUser(userId = "2")
+    @Test
+    void testDeleteArticleByNonOwner() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+
+        mockMvc.perform(delete("/api/article/{articleId}", articleId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @Transactional
+    @WithAnonymousUser
+    void testDeleteArticleWithAnonymousUser() throws Exception {
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
+
+        mockMvc.perform(delete("/api/article/{articleId}", articleId))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
     @Transactional
@@ -326,6 +388,15 @@ class ArticleControllerTest {
                 .andExpect(jsonPath("$.[0].author.url").exists())
                 .andExpect(jsonPath("$.[0].react").exists())
                 .andExpect(jsonPath("$.[0].reacted").exists());
+    }
+
+    @Transactional
+    @WithAnonymousUser
+    @Test
+    void testSubscriptionFeedWithAnonymousUser() throws Exception {
+        mockMvc.perform(get("/api/article/subscriptions-feed"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
     @Transactional
