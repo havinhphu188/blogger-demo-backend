@@ -2,6 +2,7 @@ package com.example.bloggerdemo.controller;
 
 import com.example.bloggerdemo.model.Article;
 import com.example.bloggerdemo.model.BloggerUser;
+import com.example.bloggerdemo.model.Subscription;
 import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,6 +293,39 @@ class ArticleControllerTest {
 
         Article updatedArticle = entityManager.find(Article.class, articleId);
         assertNull(updatedArticle);
+    }
+
+    @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testSubscriptionFeed() throws Exception {
+        BloggerUser user1 = entityManager.getReference(BloggerUser.class, 1);
+        BloggerUser user2 = entityManager.getReference(BloggerUser.class, 2);
+        Subscription subscription = new Subscription();
+        subscription.setFollower(user1);
+        subscription.setFollowee(user2);
+        entityManager.persist(subscription);
+
+        Article article1User2 = createArticle();
+        Article article2User2 = createArticle();
+
+        article1User2.setAuthor(user2);
+        article2User2.setAuthor(user2);
+
+        entityManager.persist(article1User2);
+        entityManager.persist(article2User2);
+
+        mockMvc.perform(get("/api/article/subscriptions-feed"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.[0].id").isNumber())
+                .andExpect(jsonPath("$.[0].title").value(DEFAULT_TITLE))
+                .andExpect(jsonPath("$.[0].content").value(DEFAULT_CONTENT))
+                .andExpect(jsonPath("$.[0].author.name").isString())
+                .andExpect(jsonPath("$.[0].author.url").exists())
+                .andExpect(jsonPath("$.[0].react").exists())
+                .andExpect(jsonPath("$.[0].reacted").exists());
     }
 
 
