@@ -5,17 +5,10 @@ import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.model.Subscription;
 import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -26,10 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-class ArticleControllerTest {
+class ArticleControllerTest extends BloggerTestBase {
 
     private final String DEFAULT_TITLE = "AAAAAA";
     private final String DEFAULT_CONTENT = "BBBBBB";
@@ -37,19 +27,15 @@ class ArticleControllerTest {
     private final String UPDATED_TITLE = "UPAAAAAA";
     private final String UPDATED_CONTENT = "UPBBBBBB";
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @PersistenceContext
-    EntityManager entityManager;
-
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void getAll() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a " +
+                "where a.author.id = :authorId")
+                .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
         mockMvc.perform(get("/api/article/all"))
@@ -79,7 +65,8 @@ class ArticleControllerTest {
     void getAllWhenNotAuthor() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a " +
+                "where a.author.id = 1");
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
         mockMvc.perform(get("/api/article/all"))
@@ -89,12 +76,13 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void getGlobalFeed() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = :authorId")
+                .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
         mockMvc.perform(get("/api/article/global-feed"))
@@ -116,7 +104,7 @@ class ArticleControllerTest {
     void getGlobalFeedWithAnonymous() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a");
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
         mockMvc.perform(get("/api/article/global-feed"))
@@ -133,12 +121,13 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void getGlobalFeedWithAuthenticatedUser() throws Exception {
         entityManager.persist(createArticle());
         entityManager.persist(createArticle());
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = :authorId")
+                .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
         assertEquals(2,count);
         mockMvc.perform(get("/api/article/global-feed"))
@@ -155,10 +144,12 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testAddArticle() throws Exception {
-        Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = 1");
+        Query query = entityManager.createQuery("SELECT count(a) from Article a " +
+                "where a.author.id = :authorId")
+                .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int numberOfRecordBefore = ((Number) query.getSingleResult()).intValue();
 
         mockMvc.perform(post("/api/article")
@@ -196,7 +187,7 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testAddArticleWithInvalidForm() throws Exception {
         mockMvc.perform(post("/api/article")
@@ -210,13 +201,14 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testAddOrRemoveReact() throws Exception {
         Article article = createArticle();
         entityManager.persist(article);
         int articleId = article.getId();
-        Query query = entityManager.createQuery("select count(r) from UserReaction r where r.article.id = :articleId")
+        Query query = entityManager.createQuery("select count(r) from UserReaction r " +
+                "where r.article.id = :articleId")
                 .setParameter("articleId", articleId);
         final long originalCountOfReact = (long) query.getSingleResult();
 
@@ -250,7 +242,7 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testUpdateArticle() throws Exception {
 
@@ -280,7 +272,7 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testUpdateArticleWithInvalidForm() throws Exception {
         mockMvc.perform(post("/api/article")
@@ -330,7 +322,7 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testDeleteArticle() throws Exception {
         Article article = createArticle();
@@ -372,13 +364,14 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testSubscriptionFeed() throws Exception {
-        BloggerUser user1 = entityManager.getReference(BloggerUser.class, 1);
+        BloggerUser currentUser = entityManager
+                .getReference(BloggerUser.class,  Integer.valueOf(CURRENT_USER_ID));
         BloggerUser user2 = entityManager.getReference(BloggerUser.class, 2);
         Subscription subscription = new Subscription();
-        subscription.setFollower(user1);
+        subscription.setFollower(currentUser);
         subscription.setFollowee(user2);
         entityManager.persist(subscription);
 
@@ -414,7 +407,7 @@ class ArticleControllerTest {
     }
 
     @Transactional
-    @WithMockCustomUser(userId = "1")
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
     void testAuthorFeed() throws Exception {
         BloggerUser user2 = entityManager.getReference(BloggerUser.class, 2);
@@ -443,7 +436,8 @@ class ArticleControllerTest {
 
 
     private Article createArticle(){
-        BloggerUser bloggerUser = entityManager.getReference(BloggerUser.class, 1);
+        BloggerUser bloggerUser = entityManager
+                .getReference(BloggerUser.class,  Integer.valueOf(CURRENT_USER_ID));
         Article article1 = new Article();
         article1.setAuthor(bloggerUser);
         article1.setTitle(DEFAULT_TITLE);

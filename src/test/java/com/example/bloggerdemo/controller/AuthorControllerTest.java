@@ -4,16 +4,9 @@ import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.model.Subscription;
 import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,29 +17,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-class AuthorControllerTest {
-
-    private final String CURRENT_USER_ID = "1";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @PersistenceContext
-    EntityManager entityManager;
+class AuthorControllerTest extends BloggerTestBase{
 
     @Test
     @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Transactional
-    void getCurrentUserInfo() throws Exception {
+    void getAuthorInfo() throws Exception {
 
         int authorId = 2;
         BloggerUser author = entityManager.find(BloggerUser.class, authorId);
-        BloggerUser user1 = entityManager.getReference(BloggerUser.class, 1);
+        BloggerUser currentUser = entityManager
+                .getReference(BloggerUser.class,  Integer.valueOf(CURRENT_USER_ID));
         Subscription subscription = new Subscription();
-        subscription.setFollower(user1);
+        subscription.setFollower(currentUser);
         subscription.setFollowee(author);
         entityManager.persist(subscription);
 
