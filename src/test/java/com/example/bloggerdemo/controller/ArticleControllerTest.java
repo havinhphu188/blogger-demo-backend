@@ -19,8 +19,7 @@ import javax.persistence.Query;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +31,9 @@ class ArticleControllerTest {
 
     private final String DEFAULT_TITLE = "AAAAAA";
     private final String DEFAULT_CONTENT = "BBBBBB";
+
+    private final String UPDATED_TITLE = "UPAAAAAA";
+    private final String UPDATED_CONTENT = "UPBBBBBB";
 
     @Autowired
     private MockMvc mockMvc;
@@ -245,8 +247,35 @@ class ArticleControllerTest {
         assertEquals(originalCountOfReact,afterApiCallReact);
     }
 
+    @Transactional
+    @WithMockCustomUser(userId = "1")
+    @Test
+    void testUpdateArticle() throws Exception {
 
+        Article article = createArticle();
+        entityManager.persist(article);
+        int articleId = article.getId();
 
+        mockMvc.perform(put("/api/article/{articleId}", articleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"title\": \""+ UPDATED_TITLE +"\",\n" +
+                        "    \"content\": \""+ UPDATED_CONTENT +"\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.title").value(UPDATED_TITLE))
+                .andExpect(jsonPath("$.content").value(UPDATED_CONTENT))
+                .andExpect(jsonPath("$.author.name").isString())
+                .andExpect(jsonPath("$.author.url").exists())
+                .andExpect(jsonPath("$.react").exists())
+                .andExpect(jsonPath("$.reacted").exists());
+
+        Article updatedArticle = entityManager.find(Article.class,articleId);
+        assertEquals(UPDATED_TITLE, updatedArticle.getTitle());
+        assertEquals(UPDATED_CONTENT, updatedArticle.getContent());
+    }
 
     private Article createArticle(){
         BloggerUser bloggerUser = entityManager.getReference(BloggerUser.class, 1);
