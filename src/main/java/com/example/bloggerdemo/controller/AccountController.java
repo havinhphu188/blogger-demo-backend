@@ -34,10 +34,15 @@ public class AccountController {
     }
 
     @GetMapping("user-info")
-    public ResponseEntity<?> getCurrentUserInfo(@AuthenticationPrincipal String userId){
-        if (userId.equals("anonymousUser")) return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
+        int userId;
+        try {
+            userId = Integer.parseInt(userIdString);
+        } catch (NumberFormatException exception) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         BloggerUser bloggerUser = this.bloggerUserRepository
-                .findById(Integer.parseInt(userId))
+                .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
         Map<String, String> result = new HashMap<>();
         result.put("username", bloggerUser.getDisplayName());
