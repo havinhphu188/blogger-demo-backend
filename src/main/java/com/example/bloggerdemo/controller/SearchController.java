@@ -23,7 +23,7 @@ public class SearchController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getCurrentUserInfo(@RequestParam("searchTerm") String searchTerm){
+    public ResponseEntity<?> searchUserByUsernames(@RequestParam("searchTerm") String searchTerm){
         List<BloggerUser> searchResult = bloggerUserRepository.findByDisplayNameContainingIgnoreCase(searchTerm);
         List<AuthorSearchResultVm> resultViewModel = searchResult.stream()
                 .map(AuthorSearchResultVm::new).collect(Collectors.toList());
