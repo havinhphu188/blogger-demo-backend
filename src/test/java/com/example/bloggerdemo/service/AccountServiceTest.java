@@ -1,6 +1,7 @@
-package com.example.bloggerdemo.service.business;
+package com.example.bloggerdemo.service;
 
 import com.example.bloggerdemo.repository.BloggerUserRepository;
+import com.example.bloggerdemo.service.business.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
