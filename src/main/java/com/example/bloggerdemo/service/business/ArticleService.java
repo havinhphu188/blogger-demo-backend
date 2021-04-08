@@ -80,7 +80,7 @@ public class ArticleService {
     }
 
     public List<Article> getAuthorFeed(int authorId) {
-        return articleRepository.findAllByAuthorId(authorId);
+        return articleRepository.findAllByAuthorIdOrderByCreateAtDesc(authorId);
     }
 
     public int getNumberOfReaction(int articleId) {

@@ -46,7 +46,7 @@ class ArticleRepositoryTest {
 
     @Test
     void findAllByAuthorIdTest(){
-        List<Article> articles = articleRepository.findAllByAuthorId(TEST_USER_ID);
+        List<Article> articles = articleRepository.findAllByAuthorIdOrderByCreateAtDesc(TEST_USER_ID);
         assertFalse(articles.isEmpty());
     }
 

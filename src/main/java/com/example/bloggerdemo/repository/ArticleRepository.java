@@ -11,7 +11,7 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Integer>, CustomArticleRepository {
     List<Article> findByAuthorOrderByCreateAtDesc(BloggerUser author);
     List<Article> findAllByOrderByCreateAtDesc();
-    List<Article> findAllByAuthorId(Integer authorId);
+    List<Article> findAllByAuthorIdOrderByCreateAtDesc(Integer authorId);
 
     @Query("select count(r) from UserReaction r where r.article.id =:articleId")
     int getNumberOfReaction(int articleId);
