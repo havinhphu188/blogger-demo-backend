@@ -24,7 +24,7 @@ public class AuthorController {
     }
 
     @GetMapping("get-info/{authorId}")
-    public ResponseEntity<?> getCurrentUserInfo(@PathVariable int authorId, @AuthenticationPrincipal String userId){
+    public ResponseEntity<Object> getCurrentUserInfo(@PathVariable int authorId, @AuthenticationPrincipal String userId){
 
         BloggerUser author = authorService.getAuthorInfo(authorId);
         boolean isSubscribed = authorService.isUserSubscribeToAuthor(authorId,Integer.parseInt(userId));
@@ -32,7 +32,7 @@ public class AuthorController {
     }
 
     @PostMapping("subscribe/{authorId}")
-    public ResponseEntity<?> subscribeOrUnsubscribeAuthor(@PathVariable int authorId, @AuthenticationPrincipal String userId){
+    public ResponseEntity<Object> subscribeOrUnsubscribeAuthor(@PathVariable int authorId, @AuthenticationPrincipal String userId){
         boolean isUserSubscribeToAuthor = authorService.subscribeOrUnsubcribeToAuthor(authorId,Integer.parseInt(userId));
         Map<String, Boolean> result = new HashMap<>();
         result.put("isSubscribed", isUserSubscribeToAuthor);

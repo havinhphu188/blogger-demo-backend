@@ -17,7 +17,7 @@ import java.util.Map;
 class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> handleControllerException(HttpServletRequest request, Throwable ex) {
+    public ResponseEntity<Map<String, Object>> handleControllerException(HttpServletRequest request, Throwable ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());

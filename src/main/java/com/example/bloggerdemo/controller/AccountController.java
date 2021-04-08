@@ -34,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("user-info")
-    public ResponseEntity<?> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
+    public ResponseEntity<Map<String, String>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
         int userId;
         try {
             userId = Integer.parseInt(userIdString);
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?> registerUser(@RequestBody UserParam user){
+    public ResponseEntity<Object> registerUser(@RequestBody UserParam user){
         BloggerUser bloggerUser = new BloggerUser();
         bloggerUser.setUsername(user.getUsername());
         bloggerUser.setDisplayName(user.getDisplayName());
@@ -62,7 +62,7 @@ public class AccountController {
     }
 
     @GetMapping("check-if-field-unique")
-    public ResponseEntity<?> isUsernameUnique(@RequestParam("fieldName")String fieldName,
+    public ResponseEntity<Boolean> isUsernameUnique(@RequestParam("fieldName")String fieldName,
                                               @RequestParam("fieldValue")String fieldValue){
         boolean result = this.accountService.checkIfFieldUnique(fieldName, fieldValue);
         return ResponseEntity.ok(result);

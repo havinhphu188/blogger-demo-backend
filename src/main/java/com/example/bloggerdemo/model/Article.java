@@ -29,7 +29,7 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserReaction> userReactions = new HashSet<>();
 
-    private LocalDateTime createAt = LocalDateTime.now();;
+    private LocalDateTime createAt = LocalDateTime.now();
 
     public void addUserReaction(UserReaction userReaction) {
         userReactions.add( userReaction );

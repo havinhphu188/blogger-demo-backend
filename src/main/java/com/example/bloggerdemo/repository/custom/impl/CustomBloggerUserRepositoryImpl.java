@@ -33,8 +33,8 @@ public class CustomBloggerUserRepositoryImpl implements CustomBloggerUserReposit
 
     @Override
     public boolean isUserSubscribeToAuthor(Integer authorId, Integer userId){
-        List result = entityManager.createQuery("select sub from Subscription as sub " +
-                "where sub.followee.id = :authorId and sub.follower.id = :userId")
+        List<Subscription> result = entityManager.createQuery("select sub from Subscription as sub " +
+                "where sub.followee.id = :authorId and sub.follower.id = :userId", Subscription.class)
                 .setParameter("authorId",authorId)
                 .setParameter("userId", userId)
                 .getResultList();

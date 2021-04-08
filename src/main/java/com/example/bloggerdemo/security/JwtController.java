@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +29,12 @@ public class JwtController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
         jwtAuthenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                         authenticationRequest.getPassword()));
-        BloggerUser bloggerUser = bloggerUserRepository.findOneByUsername(authenticationRequest.getUsername()).orElse(null);
+        BloggerUser bloggerUser = bloggerUserRepository.findOneByUsername(authenticationRequest.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(authenticationRequest.getUsername()));
         final String token = jwtTokenUtil.generateToken(bloggerUser.getId());
         return ResponseEntity.ok(new JwtResponse(token));
     }

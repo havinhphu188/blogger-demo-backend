@@ -15,6 +15,7 @@ import java.util.List;
 @Transactional
 public class CustomArticleRepositoryImpl implements CustomArticleRepository {
 
+    public static final String USER_ID = "userId";
     @PersistenceContext
     EntityManager entityManager;
 
@@ -30,10 +31,10 @@ public class CustomArticleRepositoryImpl implements CustomArticleRepository {
 
     @Override
     public boolean isUserReacted(Integer articleId, Integer userId){
-        List result = entityManager.createQuery("select r from UserReaction as r " +
-                "where r.article.id = :articleId and r.bloggerUser.id = :userId")
+        List<UserReaction> result = entityManager.createQuery("select r from UserReaction as r " +
+                "where r.article.id = :articleId and r.bloggerUser.id = :userId", UserReaction.class)
                 .setParameter("articleId",articleId)
-                .setParameter("userId", userId)
+                .setParameter(USER_ID, userId)
                 .getResultList();
         return !result.isEmpty();
     }
@@ -42,19 +43,18 @@ public class CustomArticleRepositoryImpl implements CustomArticleRepository {
     public void removeUserReaction(Integer articleId, Integer userId) {
         entityManager.createQuery("delete from UserReaction r where r.article.id =:articleId and r.bloggerUser.id =:userId")
                 .setParameter("articleId", articleId)
-                .setParameter("userId", userId)
+                .setParameter(USER_ID, userId)
                 .executeUpdate();
     }
 
     @Override
     public List<Article> getArticleBySubscription(Integer userId) {
-        List article = entityManager.createQuery("select a from Article a " +
+
+        return entityManager.createQuery("select a from Article a " +
                 "where a.author.id in  " +
                 "(select sub.followee from Subscription sub " +
-                "where sub.follower.id = :userId) order by a.createAt desc")
-                .setParameter("userId", userId)
+                "where sub.follower.id = :userId) order by a.createAt desc", Article.class)
+                .setParameter(USER_ID, userId)
                 .getResultList();
-
-        return article;
     }
 }

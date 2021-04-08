@@ -14,7 +14,7 @@ public class BloggerResponseEntity<T> extends ResponseEntity<T> {
         super(status);
     }
 
-    public static ResponseEntity<?> ok(ViewModel viewModel) {
+    public static ResponseEntity<Object> ok(ViewModel viewModel) {
         return ok(viewModel.toView());
     }
 }

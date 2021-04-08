@@ -1,6 +1,5 @@
 package com.example.bloggerdemo.security;
 
-import com.example.bloggerdemo.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +16,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private final String header = "Authorization";
+    private static final String HEADER = "Authorization";
 
     @Autowired
     public JwtRequestFilter(JwtTokenUtil jwtTokenUtil) {
@@ -34,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private void setAuthorizedIfTokenValid(HttpServletRequest request) {
-        String jwtToken = request.getHeader(header).substring(7);
+        String jwtToken = request.getHeader(HEADER).substring(7);
         String userId = jwtTokenUtil.getIdFromToken(jwtToken);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 userId, null, null);
@@ -42,9 +41,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private boolean hasAuthorizationToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(header);
+        String authorizationHeader = request.getHeader(HEADER);
         if (authorizationHeader == null) return false;
-        if (!authorizationHeader.startsWith("Bearer ")) return false;
-        return true;
+        return authorizationHeader.startsWith("Bearer ");
     }
 }
