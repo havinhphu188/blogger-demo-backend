@@ -37,11 +37,11 @@ class ArticleControllerTest extends BloggerTestBase {
                 "where a.author.id = :authorId")
                 .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
-        assertEquals(2,count);
+
         mockMvc.perform(get("/api/article/all"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.*", hasSize(count)))
                 .andExpect(jsonPath("$.[1].id").isNumber())
                 .andExpect(jsonPath("$.[1].title").value(DEFAULT_TITLE))
                 .andExpect(jsonPath("$.[1].content").value(DEFAULT_CONTENT))
@@ -68,7 +68,7 @@ class ArticleControllerTest extends BloggerTestBase {
         Query query = entityManager.createQuery("SELECT count(a) from Article a " +
                 "where a.author.id = 1");
         int count = ((Number) query.getSingleResult()).intValue();
-        assertEquals(2,count);
+        assertEquals(7, count);
         mockMvc.perform(get("/api/article/all"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,11 +85,11 @@ class ArticleControllerTest extends BloggerTestBase {
                 "where a.author.id = :authorId")
                 .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
-        assertEquals(2,count);
+
         mockMvc.perform(get("/api/article/global-feed"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.*", hasSize(count)))
                 .andExpect(jsonPath("$.[1].id").isNumber())
                 .andExpect(jsonPath("$.[1].title").value(DEFAULT_TITLE))
                 .andExpect(jsonPath("$.[1].content").value(DEFAULT_CONTENT))
@@ -107,11 +107,10 @@ class ArticleControllerTest extends BloggerTestBase {
         entityManager.persist(createArticle());
         Query query = entityManager.createQuery("SELECT count(a) from Article a");
         int count = ((Number) query.getSingleResult()).intValue();
-        assertEquals(2,count);
         mockMvc.perform(get("/api/article/global-feed"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.*", hasSize(count)))
                 .andExpect(jsonPath("$.[1].id").isNumber())
                 .andExpect(jsonPath("$.[1].title").value(DEFAULT_TITLE))
                 .andExpect(jsonPath("$.[1].content").value(DEFAULT_CONTENT))
@@ -130,11 +129,10 @@ class ArticleControllerTest extends BloggerTestBase {
         Query query = entityManager.createQuery("SELECT count(a) from Article a where a.author.id = :authorId")
                 .setParameter("authorId", Integer.valueOf(CURRENT_USER_ID));
         int count = ((Number) query.getSingleResult()).intValue();
-        assertEquals(2,count);
         mockMvc.perform(get("/api/article/global-feed"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.*", hasSize(count)))
                 .andExpect(jsonPath("$.[1].id").isNumber())
                 .andExpect(jsonPath("$.[1].title").value(DEFAULT_TITLE))
                 .andExpect(jsonPath("$.[1].content").value(DEFAULT_CONTENT))
