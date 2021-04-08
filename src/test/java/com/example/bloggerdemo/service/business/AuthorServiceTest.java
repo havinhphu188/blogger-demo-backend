@@ -26,7 +26,7 @@ class AuthorServiceTest {
         final int userId = 1;
 
         when(bloggerUserRepository.isUserSubscribeToAuthor(authorId, userId)).thenReturn(true);
-        assertFalse(authorService.subscribeOrUnsubcribeToAuthor(authorId, userId));
+        assertFalse(authorService.subscribeOrUnsubscribeToAuthor(authorId, userId));
         verify(bloggerUserRepository).unsubscribeToAuthor(authorId,userId);
     }
 
@@ -36,7 +36,7 @@ class AuthorServiceTest {
         final int userId = 1;
 
         when(bloggerUserRepository.isUserSubscribeToAuthor(authorId, userId)).thenReturn(false);
-        assertTrue(authorService.subscribeOrUnsubcribeToAuthor(authorId, userId));
+        assertTrue(authorService.subscribeOrUnsubscribeToAuthor(authorId, userId));
         verify(bloggerUserRepository).subscribeToAuthor(authorId,userId);
     }
 
