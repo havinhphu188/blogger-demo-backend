@@ -3,6 +3,7 @@ package com.example.bloggerdemo.controller;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.repository.BloggerUserRepository;
 import com.example.bloggerdemo.service.business.AccountService;
+import com.example.bloggerdemo.viewmodel.AuthorPreviewVm;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/account")
@@ -34,7 +37,7 @@ public class AccountController {
     }
 
     @GetMapping("user-info")
-    public ResponseEntity<Map<String, String>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
+    public ResponseEntity<Map<String, Object>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
         int userId;
         try {
             userId = Integer.parseInt(userIdString);
@@ -44,8 +47,15 @@ public class AccountController {
         BloggerUser bloggerUser = this.bloggerUserRepository
                 .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
-        Map<String, String> result = new HashMap<>();
+
+        List<BloggerUser> subscribedAuthor = this.bloggerUserRepository.getListOfSubscribedAuthor(userId);
+
+        List<AuthorPreviewVm> resultViewModel = subscribedAuthor.stream()
+                .map(AuthorPreviewVm::new).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
         result.put("username", bloggerUser.getDisplayName());
+        result.put("subscribedAuthors", resultViewModel);
         return ResponseEntity.ok(result);
     }
 

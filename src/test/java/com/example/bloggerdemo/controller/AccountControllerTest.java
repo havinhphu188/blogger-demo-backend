@@ -1,6 +1,7 @@
 package com.example.bloggerdemo.controller;
 
 import com.example.bloggerdemo.model.BloggerUser;
+import com.example.bloggerdemo.model.Subscription;
 import com.example.bloggerdemo.util.mockcustomuser.WithMockCustomUser;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,10 +31,30 @@ class AccountControllerTest extends BloggerTestBase {
     void getCurrentUserInfo() throws Exception {
         BloggerUser currentUser = entityManager.find(BloggerUser.class, Integer.parseInt(CURRENT_USER_ID));
 
+        Subscription sub1 = new Subscription();
+        sub1.setFollower(entityManager.getReference(BloggerUser.class,Integer.parseInt(CURRENT_USER_ID)));
+        sub1.setFollowee(entityManager.getReference(BloggerUser.class,2));
+
+        Subscription sub2 = new Subscription();
+        sub2.setFollower(entityManager.getReference(BloggerUser.class,Integer.parseInt(CURRENT_USER_ID)));
+        sub2.setFollowee(entityManager.getReference(BloggerUser.class,3));
+
+        entityManager.persist(sub1);
+        entityManager.persist(sub2);
+
+        long subscriptionsOfUser = (long) entityManager
+                .createQuery("select count(sub) from Subscription sub " +
+                        "where sub.follower.id = :userId")
+                .setParameter("userId", Integer.parseInt(CURRENT_USER_ID)).getSingleResult();
         mockMvc.perform(get("/api/account/user-info"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(currentUser.getDisplayName()));
+                .andExpect(jsonPath("$.username").value(currentUser.getDisplayName()))
+                .andExpect(jsonPath("$.subscribedAuthors", hasSize((int) subscriptionsOfUser)))
+                .andExpect(jsonPath("$.subscribedAuthors.[0].displayName").isString())
+                .andExpect(jsonPath("$.subscribedAuthors.[0].bio").isString())
+                .andExpect(jsonPath("$.subscribedAuthors.[0].url").exists())
+        ;
     }
 
     @Test

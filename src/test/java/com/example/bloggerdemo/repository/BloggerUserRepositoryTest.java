@@ -1,6 +1,7 @@
 package com.example.bloggerdemo.repository;
 
 import com.example.bloggerdemo.model.BloggerUser;
+import com.example.bloggerdemo.model.Subscription;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,8 +38,8 @@ class BloggerUserRepositoryTest {
     @Transactional
     void findByDisplayNameContainingIgnoreCase() {
         final String searchTerm = "martin";
-        List result = entityManager.createQuery("select u from BloggerUser u " +
-                "where lower(u.displayName) like lower(concat('%',:searchTerm,'%'))")
+        List<BloggerUser> result = entityManager.createQuery("select u from BloggerUser u " +
+                "where lower(u.displayName) like lower(concat('%',:searchTerm,'%'))", BloggerUser.class)
                 .setParameter("searchTerm", searchTerm).getResultList();
         List<BloggerUser> users = bloggerUserRepository
                 .findByDisplayNameContainingIgnoreCase(searchTerm);
@@ -96,6 +97,31 @@ class BloggerUserRepositoryTest {
         assertTrue(bloggerUserRepository.isUserSubscribeToAuthor(1, 2));
         bloggerUserRepository.unsubscribeToAuthor(1,2);
         assertFalse(bloggerUserRepository.isUserSubscribeToAuthor(1, 2));
+    }
+
+    @Test
+    @Transactional
+    void test(){
+        final int userId = 1;
+        Subscription sub1 = new Subscription();
+        sub1.setFollower(entityManager.getReference(BloggerUser.class,userId));
+        sub1.setFollowee(entityManager.getReference(BloggerUser.class,2));
+
+        Subscription sub2 = new Subscription();
+        sub2.setFollower(entityManager.getReference(BloggerUser.class,userId));
+        sub2.setFollowee(entityManager.getReference(BloggerUser.class,3));
+
+        entityManager.persist(sub1);
+        entityManager.persist(sub2);
+
+        long subscriptionsOfUser = (long) entityManager
+                .createQuery("select count(sub) from Subscription sub " +
+                        "where sub.follower.id = :userId")
+                .setParameter("userId", userId)
+                .getSingleResult();
+        List<BloggerUser> subscribedAuthors = this.bloggerUserRepository.getListOfSubscribedAuthor(userId);
+
+        assertEquals(subscriptionsOfUser, subscribedAuthors.size());
     }
 
 }
