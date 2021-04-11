@@ -21,6 +21,7 @@ public class Article {
     private String title;
 
     @NotBlank(message = "Content is mandatory")
+    @Column(length = 1000)
     private String content;
 
     @ManyToOne
