@@ -24,7 +24,10 @@ public class SearchController {
 
     @GetMapping()
     public ResponseEntity<List<AuthorSearchResultVm>> searchUserByUsernames(@RequestParam("searchTerm") String searchTerm){
-        List<BloggerUser> searchResult = bloggerUserRepository.findByDisplayNameContainingIgnoreCase(searchTerm.trim());
+        String preparedSearchTerm = searchTerm.replaceAll("\\s{2,}", " ").trim();
+        List<BloggerUser> searchResult = bloggerUserRepository
+                .findByDisplayNameContainingIgnoreCase
+                        (preparedSearchTerm);
         List<AuthorSearchResultVm> resultViewModel = searchResult.stream()
                 .map(AuthorSearchResultVm::new).collect(Collectors.toList());
         return ResponseEntity.ok(resultViewModel);
