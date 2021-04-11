@@ -6,6 +6,7 @@ import com.example.bloggerdemo.service.business.AccountService;
 import com.example.bloggerdemo.viewmodel.AuthorPreviewVm;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,10 +86,15 @@ public class AccountController {
 @Setter
 class UserParam{
     @NotNull
+    @Pattern(regexp = "[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?")
     private String username;
+
     @NotNull
+    @Length(min = 4)
     private String password;
+
     @NotNull
+    @Pattern(regexp = "[a-zA-Z0-9]([a-zA-Z0-9]+[ ]?)*[a-zA-Z0-9]")
     private String displayName;
 
     private String bio;
