@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -55,6 +56,14 @@ class AccountControllerTest extends BloggerTestBase {
                 .andExpect(jsonPath("$.subscribedAuthors.[0].bio").isString())
                 .andExpect(jsonPath("$.subscribedAuthors.[0].url").exists())
         ;
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getUserInfoFromAnonymousUser() throws Exception {
+        mockMvc.perform(get("/api/account/user-info"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public class AccountController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<Object> registerUser(@RequestBody UserParam user){
+    public ResponseEntity<Object> registerUser(@RequestBody @Valid UserParam user){
         BloggerUser bloggerUser = new BloggerUser();
         bloggerUser.setUsername(user.getUsername());
         bloggerUser.setDisplayName(user.getDisplayName());

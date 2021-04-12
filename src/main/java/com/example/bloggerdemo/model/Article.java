@@ -32,16 +32,6 @@ public class Article {
 
     private LocalDateTime createAt = LocalDateTime.now();
 
-    public void addUserReaction(UserReaction userReaction) {
-        userReactions.add( userReaction );
-        userReaction.setArticle( this );
-    }
-
-    public void removeUserReaction(UserReaction userReaction) {
-        userReactions.remove( userReaction );
-        userReaction.setArticle( null );
-    }
-
     public void update(String title, String content){
         this.title = title;
         this.content = content;
