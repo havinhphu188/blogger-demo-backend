@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +17,14 @@ import java.util.function.Function;
 @Component
 @Log4j2
 public class JwtTokenUtil{
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60L;
+	private long jwtTokenValidity;
 	@Value("${jwt.secret}")
 	private String secret;
+
+	@PostConstruct
+	public void init(){
+		jwtTokenValidity = 5 * 60 * 60L;
+	}
 
 	public String getIdFromToken(String token) {
 		return getClaimFromToken(token, Claims::getId);
@@ -39,7 +45,7 @@ public class JwtTokenUtil{
 
 	private String doGenerateToken(Map<String, Object> claims, int userId) {
 		return Jwts.builder().setClaims(claims).setId(String.valueOf(userId)).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+				.setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
 	}
 
