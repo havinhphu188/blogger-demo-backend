@@ -23,7 +23,7 @@ public class JwtTokenUtil{
 
 	@PostConstruct
 	public void init(){
-		jwtTokenValidity = 5 * 60 * 60L;
+		jwtTokenValidity = 24 * 60 * 60L;
 	}
 
 	public String getIdFromToken(String token) {

@@ -47,7 +47,7 @@ class AccountControllerTest extends BloggerTestBase {
                 .createQuery("select count(sub) from Subscription sub " +
                         "where sub.follower.id = :userId")
                 .setParameter("userId", Integer.parseInt(CURRENT_USER_ID)).getSingleResult();
-        mockMvc.perform(get("/api/account/user-info"))
+        mockMvc.perform(get("/api/account/subscribed-author"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(currentUser.getDisplayName()))
@@ -64,6 +64,15 @@ class AccountControllerTest extends BloggerTestBase {
         mockMvc.perform(get("/api/account/user-info"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockCustomUser(userId = CURRENT_USER_ID)
+    void getUserInfoAuthenticatedUser() throws Exception {
+        mockMvc.perform(get("/api/account/user-info"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("username 1"));
     }
 
     @Test

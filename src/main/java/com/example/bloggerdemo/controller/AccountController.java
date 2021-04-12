@@ -40,13 +40,24 @@ public class AccountController {
     }
 
     @GetMapping("user-info")
-    public ResponseEntity<Map<String, Object>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
+    public ResponseEntity<Map<String, String>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
         int userId;
         try {
             userId = Integer.parseInt(userIdString);
         } catch (NumberFormatException exception) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
+        BloggerUser bloggerUser = this.bloggerUserRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
+        Map<String, String> result = new HashMap<>();
+        result.put("username", bloggerUser.getDisplayName());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("subscribed-author")
+    public ResponseEntity<Map<String, Object>> getListOfSubscribedAuthor(@AuthenticationPrincipal String userIdString){
+        int userId = Integer.parseInt(userIdString);
         BloggerUser bloggerUser = this.bloggerUserRepository
                 .findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("userid not found: " + userId));
