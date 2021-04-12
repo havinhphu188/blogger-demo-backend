@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
-class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>> handleControllerException(HttpServletRequest request, Throwable ex) {

@@ -1,8 +1,10 @@
 package com.example.bloggerdemo.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
+@Log4j2
 public class JwtTokenUtil{
 	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60L;
 	@Value("${jwt.secret}")
@@ -25,12 +28,10 @@ public class JwtTokenUtil{
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
 	}
-		// for retrieveing any information from token we will need the secret key
 	private Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
-		//generate token for user
 	public String generateToken(int userId) {
 		Map<String, Object> claims = new HashMap<>();
 		return doGenerateToken(claims, userId);
@@ -40,6 +41,17 @@ public class JwtTokenUtil{
 		return Jwts.builder().setClaims(claims).setId(String.valueOf(userId)).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
+	}
+
+	public boolean validateToken(String authToken) {
+		try {
+			Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
+			return true;
+		} catch (JwtException | IllegalArgumentException e) {
+			log.info("Invalid JWT token.");
+			log.trace("Invalid JWT token trace.", e);
+		}
+		return false;
 	}
 
 }

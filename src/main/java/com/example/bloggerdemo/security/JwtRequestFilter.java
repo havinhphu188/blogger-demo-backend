@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -16,7 +17,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private static final String HEADER = "Authorization";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Autowired
     public JwtRequestFilter(JwtTokenUtil jwtTokenUtil) {
@@ -24,25 +25,28 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain chain)
             throws ServletException, IOException {
-        if (hasAuthorizationToken(request)) {
-            setAuthorizedIfTokenValid(request);
+        String jwt = resolveToken(request);
+        if (StringUtils.hasText(jwt) && this.jwtTokenUtil.validateToken(jwt)) {
+            setAuthorized(jwt);
         }
         chain.doFilter(request, response);
     }
 
-    private void setAuthorizedIfTokenValid(HttpServletRequest request) {
-        String jwtToken = request.getHeader(HEADER).substring(7);
+    private void setAuthorized(String jwtToken) {
         String userId = jwtTokenUtil.getIdFromToken(jwtToken);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 userId, null, null);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
-    private boolean hasAuthorizationToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HEADER);
-        if (authorizationHeader == null) return false;
-        return authorizationHeader.startsWith("Bearer ");
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }
