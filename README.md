@@ -10,7 +10,7 @@ Live demo (Deployed in heroku): https://simple-blogger-3000.herokuapp.com/
 
 ## Setup environment for frontend
 - run `npm install` 
-- After all package is installed, run `ng serve'
+- After all package is installed, run `ng serve`
 - Frontend is now served in http://localhost:4200/
 
 ## Setup environment for backend
