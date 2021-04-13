@@ -29,3 +29,5 @@ Live demo (Deployed in heroku): https://simple-blogger-3000.herokuapp.com/
 - run `mvnw spring-boot:run`. Backend API is now served at http://localhost:8080/
 ### Run unit test & integration test
 - run `mvnw test`
+### Setup IDE for development
+- IntelliJ IDEA or Eclipse with @Lombok plugin. https://projectlombok.org/setup/intellij
