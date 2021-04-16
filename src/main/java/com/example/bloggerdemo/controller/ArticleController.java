@@ -10,12 +10,11 @@ import com.example.bloggerdemo.viewmodel.ArticleVm;
 import com.example.bloggerdemo.viewmodel.util.BloggerResponseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api/article")
+@Log4j2
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -38,9 +38,9 @@ public class ArticleController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<Object> getAll(){
+    public ResponseEntity<Object> getAll(@AuthenticationPrincipal String userIdString){
         List<Article> articles = this.articleService
-                .findAllByUser(getUserIdFromContext());
+                .findAllByUser(Integer.parseInt(userIdString));
         return BloggerResponseEntity.ok(new ArticleFeedNoReactVm(articles));
     }
 
@@ -63,12 +63,13 @@ public class ArticleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> addArticle(@Valid @RequestBody ArticleParam articleParam){
+    public ResponseEntity<Object> addArticle(@AuthenticationPrincipal String userIdString,
+                                             @Valid @RequestBody ArticleParam articleParam){
         Article article = new Article();
         article.setTitle(articleParam.getTitle());
         article.setContent(articleParam.getContent());
         Article result = this.articleService
-                .save(article, getUserIdFromContext());
+                .save(article, Integer.parseInt(userIdString));
         return BloggerResponseEntity.ok(new ArticleVm(result));
     }
 
@@ -82,42 +83,45 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("{articleId}")
     public ResponseEntity<ArticleVm> editArticle(
-            @Valid @RequestBody ArticleParam articleParam
-            , @PathVariable int id){
-        if (isAccessDenied(id))
+            @Valid @RequestBody ArticleParam articleParam,
+            @PathVariable int articleId,
+            @AuthenticationPrincipal String userIdString){
+        if (isAccessDenied(articleId, Integer.parseInt(userIdString)))
             throw new NoAuthorizationException();
         Article article = new Article();
-        article.setId(id);
+        article.setId(articleId);
         article.setTitle(articleParam.getTitle());
         article.setContent(articleParam.getContent());
         Article result = this.articleService.update(article);
         return new ResponseEntity<>(new ArticleVm(result), HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteArticle(@PathVariable Integer id){
-        if (isAccessDenied(id))
+    @DeleteMapping("{articleId}")
+    public ResponseEntity<Object> deleteArticle(@PathVariable Integer articleId, @AuthenticationPrincipal String userIdString){
+        if (isAccessDenied(articleId, Integer.parseInt(userIdString)))
             throw new NoAuthorizationException();
-        this.articleService.deleteById(id);
+        this.articleService.deleteById(articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("subscriptions-feed")
-    public ResponseEntity<Object> getSubscriptionFeed(@AuthenticationPrincipal String userId){
+    public ResponseEntity<Object> getSubscriptionFeed(@AuthenticationPrincipal String userIdString){
+        int userId = Integer.parseInt(userIdString);
         List<Article> articles = this.articleService
-                .getSubscriptionFeedByUser(getUserIdFromContext());
+                .getSubscriptionFeedByUser(userId);
 
         Map<Integer, Boolean> isReactedMap =
                 this.articleService
                         .checkIfCurrentUserReactToArticle
-                                (Integer.parseInt(userId),articles);
+                                (userId,articles);
         return BloggerResponseEntity.ok(new ArticleFeedVm(articles, isReactedMap));
     }
 
     @GetMapping("author-feed/{authorId}")
-    public ResponseEntity<Object> getAuthorFeed(@AuthenticationPrincipal String userId, @PathVariable int authorId){
+    public ResponseEntity<Object> getAuthorFeed(@AuthenticationPrincipal String userId,
+                                                @PathVariable int authorId){
         List<Article> articles = this.articleService
                 .getAuthorFeed(authorId);
 
@@ -128,14 +132,9 @@ public class ArticleController {
         return BloggerResponseEntity.ok(new ArticleFeedVm(articles, isReactedMap));
     }
 
-    private int getUserIdFromContext(){
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Integer.parseInt((String) securityContext.getAuthentication().getPrincipal());
-    }
-
-    private boolean isAccessDenied(int id){
-        Article article = articleRepository.getOne(id);
-        return article.getAuthor().getId() != getUserIdFromContext();
+    private boolean isAccessDenied(int articleId, int userId){
+        Article article = articleRepository.getOne(articleId);
+        return article.getAuthor().getId() != userId;
     }
 
 }

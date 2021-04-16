@@ -3,11 +3,15 @@ package com.example.bloggerdemo.repository.custom.impl;
 import com.example.bloggerdemo.model.BloggerUser;
 import com.example.bloggerdemo.model.Subscription;
 import com.example.bloggerdemo.repository.custom.CustomBloggerUserRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
+@Transactional
 public class CustomBloggerUserRepositoryImpl implements CustomBloggerUserRepository {
 
     public static final String USER_ID = "userId";
