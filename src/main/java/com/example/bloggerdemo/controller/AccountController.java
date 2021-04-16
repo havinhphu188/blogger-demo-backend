@@ -6,6 +6,7 @@ import com.example.bloggerdemo.service.business.AccountService;
 import com.example.bloggerdemo.viewmodel.AuthorPreviewVm;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/account")
+@Log4j2
 public class AccountController {
     private final BloggerUserRepository bloggerUserRepository;
     private final AccountService accountService;
@@ -41,6 +43,7 @@ public class AccountController {
 
     @GetMapping("user-info")
     public ResponseEntity<Map<String, String>> getCurrentUserInfo(@AuthenticationPrincipal String userIdString){
+        log.debug("REST request to get user info with Id: {}", userIdString);
         int userId;
         try {
             userId = Integer.parseInt(userIdString);
@@ -57,6 +60,7 @@ public class AccountController {
 
     @GetMapping("subscribed-author")
     public ResponseEntity<Map<String, Object>> getListOfSubscribedAuthor(@AuthenticationPrincipal String userIdString){
+        log.debug("REST request to get list of subscribed author of user with id: {}", userIdString);
         int userId = Integer.parseInt(userIdString);
         BloggerUser bloggerUser = this.bloggerUserRepository
                 .findById(userId)
@@ -75,6 +79,7 @@ public class AccountController {
 
     @PostMapping("register")
     public ResponseEntity<Object> registerUser(@RequestBody @Valid UserParam user){
+        log.debug("REST request to register user: {}", user);
         BloggerUser bloggerUser = new BloggerUser();
         bloggerUser.setUsername(user.getUsername());
         bloggerUser.setDisplayName(user.getDisplayName());
@@ -88,6 +93,7 @@ public class AccountController {
     @GetMapping("check-if-field-unique")
     public ResponseEntity<Boolean> isUsernameUnique(@RequestParam("fieldName")String fieldName,
                                               @RequestParam("fieldValue")String fieldValue){
+        log.debug("REST request to check if field unique. fieldName: {}, fieldValue: {}", fieldName, fieldValue);
         boolean result = this.accountService.checkIfFieldUnique(fieldName, fieldValue);
         return ResponseEntity.ok(result);
     }

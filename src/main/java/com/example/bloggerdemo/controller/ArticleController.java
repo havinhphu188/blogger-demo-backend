@@ -39,6 +39,7 @@ public class ArticleController {
 
     @GetMapping("all")
     public ResponseEntity<Object> getAll(@AuthenticationPrincipal String userIdString){
+        log.debug("REST request to get all article, for user with id: {}", userIdString);
         List<Article> articles = this.articleService
                 .findAllByUser(Integer.parseInt(userIdString));
         return BloggerResponseEntity.ok(new ArticleFeedNoReactVm(articles));
@@ -46,6 +47,7 @@ public class ArticleController {
 
     @GetMapping("global-feed")
     public ResponseEntity<Object> getGlobalFeed(@AuthenticationPrincipal String userIdString){
+        log.debug("REST request to get global feed for user with id: {}", userIdString);
         List<Article> articles = this.articleService
                 .getGlobalFeed();
         int userId;
@@ -65,6 +67,7 @@ public class ArticleController {
     @PostMapping()
     public ResponseEntity<Object> addArticle(@AuthenticationPrincipal String userIdString,
                                              @Valid @RequestBody ArticleParam articleParam){
+        log.debug("REST request to add article: {}, for user with id: {}", articleParam, userIdString);
         Article article = new Article();
         article.setTitle(articleParam.getTitle());
         article.setContent(articleParam.getContent());
@@ -75,6 +78,7 @@ public class ArticleController {
 
     @PostMapping("react/{articleId}")
     public ResponseEntity<Object> addOrRemoveReaction(@PathVariable int articleId, @AuthenticationPrincipal String userId){
+        log.debug("REST request to add or remove Reaction on article,  articleId: {}, userId: {}", articleId, userId);
         boolean isUserReacted = this.articleService.addOrRemoveUserReaction(articleId, Integer.parseInt(userId));
         int numberOfReaction = this.articleService.getNumberOfReaction(articleId);
         Map<String,Object> response =new HashMap<>();
@@ -88,6 +92,9 @@ public class ArticleController {
             @Valid @RequestBody ArticleParam articleParam,
             @PathVariable int articleId,
             @AuthenticationPrincipal String userIdString){
+        log.debug("REST request to edit article with id: {}" +
+                ", with articleParam: {}, with user with id: {}",
+                articleId, articleParam, userIdString);
         if (isAccessDenied(articleId, Integer.parseInt(userIdString)))
             throw new NoAuthorizationException();
         Article article = new Article();
@@ -100,6 +107,7 @@ public class ArticleController {
 
     @DeleteMapping("{articleId}")
     public ResponseEntity<Object> deleteArticle(@PathVariable Integer articleId, @AuthenticationPrincipal String userIdString){
+        log.debug("REST request to delete article. articleId: {}, userId: {}", articleId,userIdString);
         if (isAccessDenied(articleId, Integer.parseInt(userIdString)))
             throw new NoAuthorizationException();
         this.articleService.deleteById(articleId);
@@ -108,6 +116,7 @@ public class ArticleController {
 
     @GetMapping("subscriptions-feed")
     public ResponseEntity<Object> getSubscriptionFeed(@AuthenticationPrincipal String userIdString){
+        log.debug("REST request to get subscriptions feed. userId: {}", userIdString);
         int userId = Integer.parseInt(userIdString);
         List<Article> articles = this.articleService
                 .getSubscriptionFeedByUser(userId);
@@ -122,6 +131,7 @@ public class ArticleController {
     @GetMapping("author-feed/{authorId}")
     public ResponseEntity<Object> getAuthorFeed(@AuthenticationPrincipal String userId,
                                                 @PathVariable int authorId){
+        log.debug("REST request to get author feed. userId: {}, authorId: {}", userId, authorId);
         List<Article> articles = this.articleService
                 .getAuthorFeed(authorId);
 
