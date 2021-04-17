@@ -34,3 +34,5 @@ Live demo (Deployed in heroku): https://simple-blogger-3000.herokuapp.com/
 - run `mvnw test`
 ### Setup IDE for development
 - IntelliJ IDEA or Eclipse with @Lombok plugin. https://projectlombok.org/setup/intellij
+### Postman API document specification
+- `blogger-api-document.json` (import into Postman to test API)

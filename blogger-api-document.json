@@ -1,0 +1,591 @@
+{
+	"info": {
+		"_postman_id": "82e85b3b-13e8-4d8a-b024-97331c00298f",
+		"name": "Blogger-demo Heroku",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"user1\",\r\n    \"password\":\"pw00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/authenticate",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccountController",
+			"item": [
+				{
+					"name": "GET getCurrentUserInfo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/account/user-info",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"user-info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET getListOfSubscribedAuthor",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/account/subscribed-author",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"subscribed-author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user188\",\r\n    \"password\": \"pw00\",\r\n    \"displayName\": \"never fo\",\r\n    \"bio\": \"I am to speech my stance\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/account/register",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check if username is unique",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}/api/account/check-if-field-unique?fieldName=username&fieldValue=dan_abamov_22",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"check-if-field-unique"
+							],
+							"query": [
+								{
+									"key": "fieldName",
+									"value": "username"
+								},
+								{
+									"key": "fieldName",
+									"value": "displayName",
+									"disabled": true
+								},
+								{
+									"key": "fieldValue",
+									"value": "dan_abamov_22"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check if displayName is unique",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{server}}/api/account/check-if-field-unique?fieldName=displayName&fieldValue=Dan Abramov 22",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"check-if-field-unique"
+							],
+							"query": [
+								{
+									"key": "fieldName",
+									"value": "displayName"
+								},
+								{
+									"key": "fieldValue",
+									"value": "Dan Abramov 22"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ArticleController",
+			"item": [
+				{
+					"name": "GET all article belong to user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/article/all",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET global-feed",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/article/global-feed",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"global-feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST add article",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"ggg\",\r\n    \"content\": \"ww\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/article",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST addOrRemoveUserReaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"ggg\",\r\n    \"content\": \"ww\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/article/react/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"react",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST edit article",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"gggq\",\r\n    \"content\": \"ww\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/article/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE article",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"title22\",\r\n    \"content\":\"content1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/article/2",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET subscriptions-feed",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/article/subscriptions-feed",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"subscriptions-feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET author-feed",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/article/author-feed/5",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"article",
+								"author-feed",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuthorController",
+			"item": [
+				{
+					"name": "GET author-info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/author/get-info/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"author",
+								"get-info",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST subscribeOrUnsubscribeAuthor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/author/subscribe/2",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"author",
+								"subscribe",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SearchController",
+			"item": [
+				{
+					"name": "GET searchUserByUsernames",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/search?searchTerm=user",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "user"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "c6c0ddb9-5592-40e9-909b-95c8cbe221c0",
+			"key": "server",
+			"value": "https://simple-blogger-3000.herokuapp.com/"
+		},
+		{
+			"id": "3cb0027a-d745-4fed-83eb-616a1d67f75e",
+			"key": "server",
+			"value": "http://localhost:8080",
+			"disabled": true
+		},
+		{
+			"id": "898fc480-8864-42c5-babc-49546d5e9419",
+			"key": "token",
+			"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2MTg3NDQxMzEsImlhdCI6MTYxODY1NzczMSwianRpIjoiMSJ9.8Q4710rQjS0fdtLbE23tY7VqXCmVaiTLTijbXbqcdcWm3SYFR8bcXLfGJfiXUkzgagtkYbGnT4-6vkskvxMllw"
+		}
+	]
+}
