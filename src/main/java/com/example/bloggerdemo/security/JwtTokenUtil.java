@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,12 +16,12 @@ import java.util.function.Function;
 @Component
 @Log4j2
 public class JwtTokenUtil{
-	private long jwtTokenValidity;
-	@Value("${jwt.secret}")
-	private String secret;
+	private final long jwtTokenValidity;
 
-	@PostConstruct
-	public void init(){
+	private final String secret;
+
+	public JwtTokenUtil(@Value("${jwt.secret}")String secret) {
+		this.secret = secret;
 		jwtTokenValidity = 24 * 60 * 60L;
 	}
 
