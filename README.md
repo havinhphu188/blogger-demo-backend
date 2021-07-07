@@ -1,5 +1,5 @@
 # Blogger project
-Functional Requirement: https://bitly.com.vn/h7f7td  
+Functional Requirement: https://docs.google.com/document/d/1mvd4GWxeuMcXh76O5w_zZTu5kzWF9tG8SQJxNhWPnK8/edit?usp=sharing
 
 Blogger is splited into two part
 1. Frontend (Angular): https://github.com/havinhphu188/blogger-client
