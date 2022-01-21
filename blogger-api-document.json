@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "82e85b3b-13e8-4d8a-b024-97331c00298f",
+		"_postman_id": "2ee3061f-c989-437d-9dc6-b241c3c9a3a4",
 		"name": "Blogger-demo Heroku",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -572,18 +572,15 @@
 	],
 	"variable": [
 		{
-			"id": "c6c0ddb9-5592-40e9-909b-95c8cbe221c0",
 			"key": "server",
-			"value": "https://simple-blogger-3000.herokuapp.com/"
+			"value": "https://simple-blogger-3000.herokuapp.com"
 		},
 		{
-			"id": "3cb0027a-d745-4fed-83eb-616a1d67f75e",
 			"key": "server",
 			"value": "http://localhost:8080",
 			"disabled": true
 		},
 		{
-			"id": "898fc480-8864-42c5-babc-49546d5e9419",
 			"key": "token",
 			"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2MTg3NDQxMzEsImlhdCI6MTYxODY1NzczMSwianRpIjoiMSJ9.8Q4710rQjS0fdtLbE23tY7VqXCmVaiTLTijbXbqcdcWm3SYFR8bcXLfGJfiXUkzgagtkYbGnT4-6vkskvxMllw"
 		}
