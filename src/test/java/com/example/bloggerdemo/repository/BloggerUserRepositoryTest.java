@@ -101,7 +101,7 @@ class BloggerUserRepositoryTest {
 
     @Test
     @Transactional
-    void test(){
+    void getListOfSubscribedAuthorTest(){
         final int userId = 1;
         Subscription sub1 = new Subscription();
         sub1.setFollower(entityManager.getReference(BloggerUser.class,userId));

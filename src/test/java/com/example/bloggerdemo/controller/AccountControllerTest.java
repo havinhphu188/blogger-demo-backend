@@ -29,7 +29,7 @@ class AccountControllerTest extends BloggerTestBase {
     @Transactional
     @WithMockCustomUser(userId = CURRENT_USER_ID)
     @Test
-    void getCurrentUserInfo() throws Exception {
+    void getSubscribedAuthor() throws Exception {
         BloggerUser currentUser = entityManager.find(BloggerUser.class, Integer.parseInt(CURRENT_USER_ID));
 
         Subscription sub1 = new Subscription();
