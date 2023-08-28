@@ -9,7 +9,7 @@ Live demo (Deployed in heroku): https://simple-blogger-3000.herokuapp.com/
 
 ## Prerequisite
 - Java 11
-- nodejs
+- nodejs v15
 
 ## Setup environment for frontend
 - run `npm install` 
